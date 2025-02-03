@@ -1,31 +1,37 @@
 package com.example.backend.service;
 
-import com.example.backend.API.model.User;
+import com.example.backend.dto.UserDTO;
+import com.example.backend.model.User;
+import com.example.backend.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private List<User> users;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    public UserService() {
-        users = new ArrayList<User>();
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.modelMapper = new ModelMapper();
     }
 
-    public Optional<User> getUser(Integer id) {
-        Optional optional = Optional.empty();
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> modelMapper.map(user, UserDTO.class)) // Use ModelMapper to map User to UserDTO
+                .collect(Collectors.toList());
+    }
 
-        for (User user : users) {
-            if (user.getId() == id) {
-                optional = Optional.of(user);
-                return optional;
-            }
-        }
-
-        return optional;
+    public UserDTO createUser(UserDTO userDTO) {
+        userDTO.setCreatedAt(null);
+        User user = modelMapper.map(userDTO, User.class);
+        userRepository.save(user);
+        return modelMapper.map(user, UserDTO.class);
     }
 }
+
