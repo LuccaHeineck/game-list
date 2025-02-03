@@ -24,7 +24,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "created_at", updatable = false, insertable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private Timestamp createdAt;
 
     public Integer getId() {

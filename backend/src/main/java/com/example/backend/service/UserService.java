@@ -5,8 +5,11 @@ import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,14 +26,40 @@ public class UserService {
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> modelMapper.map(user, UserDTO.class)) // Use ModelMapper to map User to UserDTO
+                .map(user -> modelMapper.map(user, UserDTO.class))
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
-        userDTO.setCreatedAt(null);
         User user = modelMapper.map(userDTO, User.class);
+
+        if (user.getCreatedAt() == null) {
+            user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        }
+
         userRepository.save(user);
+        return getUserByEmail(user.getEmail());
+    }
+
+    public UserDTO updateUser(Integer id, UserDTO userDto) {
+        User existingUser = userRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setPassword(userDto.getPassword());
+        existingUser.setUsername(userDto.getUsername());
+
+        User updatedUser = userRepository.save(existingUser);
+
+        return modelMapper.map(updatedUser, UserDTO.class);
+    }
+
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println(user);
+        System.out.println(modelMapper.map(user, UserDTO.class));
+
         return modelMapper.map(user, UserDTO.class);
     }
 }
