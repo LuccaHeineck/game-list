@@ -1,50 +1,26 @@
-package com.example.backend.model;
+package com.example.backend.dto;
 
+import com.example.backend.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
-@Entity
-@Table(name = "user_games")
-public class UserGame {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user_game", nullable = false)
+public class UserGameDTO {
+
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "id_user", nullable = false)
-    private User user;
-
-    @Column(name = "id_game", nullable = false)
+    @JsonProperty("idUser")
+    private Integer idUser;
     private Integer idGame;
-
-    @Column(name = "game_name", nullable = false)
     private String gameName;
-
-    @Column(name = "cover_image")
     private String coverImage;
-
-    @Lob
-    @Column(name = "status", nullable = false)
     private String status;
-
-    @Column(name = "genre")
     private String genre;
-
-    @Column(name = "year_of_release")
     private Integer yearOfRelease;
-
-    @Column(name = "rating")
     private Integer rating;
-
-    @Column(name = "completion_date")
     private Instant completionDate;
-
-    @Lob
-    @Column(name = "final_thoughts")
     private String finalThoughts;
 
     public Integer getId() {
@@ -55,12 +31,12 @@ public class UserGame {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public void setUser(User idUser) {
-        this.user = idUser;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
 
     public Integer getIdGame() {
@@ -134,5 +110,4 @@ public class UserGame {
     public void setFinalThoughts(String finalThoughts) {
         this.finalThoughts = finalThoughts;
     }
-
 }

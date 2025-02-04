@@ -43,7 +43,7 @@ public class UserService {
     }
 
     public UserDTO updateUser(Integer id, UserDTO userDto) {
-        User existingUser = userRepository.findById(Long.valueOf(id))
+        User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         existingUser.setPassword(userDto.getPassword());
@@ -57,9 +57,15 @@ public class UserService {
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        System.out.println(user);
-        System.out.println(modelMapper.map(user, UserDTO.class));
 
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    public UserDTO deleteUser(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(("User not found")));
+
+        userRepository.delete(user);
         return modelMapper.map(user, UserDTO.class);
     }
 }
