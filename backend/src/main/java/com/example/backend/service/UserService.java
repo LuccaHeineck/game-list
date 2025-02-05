@@ -4,6 +4,7 @@ import com.example.backend.dto.UserDTO;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
