@@ -1,15 +1,12 @@
-package com.example.backend.dto;
+package com.example.backend.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-public class UserDTO {
-
+public class UserResponseDTO {
     private Long id;
     private String username;
     private String email;
     private LocalDateTime createdAt;
-    private List<Long> gameIds; // List of game IDs (assuming you just need the IDs from UserGame)
 
     // Getters and Setters
 
@@ -43,13 +40,5 @@ public class UserDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public List<Long> getGameIds() {
-        return gameIds;
-    }
-
-    public void setGameIds(List<Long> gameIds) {
-        this.gameIds = gameIds;
     }
 }

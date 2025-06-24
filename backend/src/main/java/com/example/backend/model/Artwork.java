@@ -8,6 +8,9 @@ import java.util.*;
 @Entity
 @Table(name = "artwork")
 public class Artwork {
+
+    public Artwork() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,4 +20,28 @@ public class Artwork {
 
     @ManyToMany(mappedBy = "artworks")
     private Set<Game> games = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Set<Game> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<Game> games) {
+        this.games = games;
+    }
 }

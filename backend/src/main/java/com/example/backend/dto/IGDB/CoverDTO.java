@@ -1,14 +1,14 @@
-package com.example.backend.dto;
+package com.example.backend.dto.IGDB;
 
-public class ArtworkDTO {
-    private int id;
+public class CoverDTO {
+    private Integer id;
     private String url;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

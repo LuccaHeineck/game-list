@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.UserDTO;
+import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.service.GameService;
 import com.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -19,26 +19,26 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        UserDTO createdUser = userService.createUser(userDTO);
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserResponseDTO userDTO) {
+        UserResponseDTO createdUser = userService.createUser(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
-        UserDTO updatedUser = userService.updateUser(id, userDTO);
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Integer id, @RequestBody UserResponseDTO userDTO) {
+        UserResponseDTO updatedUser = userService.updateUser(id, userDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserDTO> deleteUser(@PathVariable Integer id) {
-        UserDTO deletedUser = userService.deleteUser(id);
+    public ResponseEntity<UserResponseDTO> deleteUser(@PathVariable Integer id) {
+        UserResponseDTO deletedUser = userService.deleteUser(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(deletedUser);
     }

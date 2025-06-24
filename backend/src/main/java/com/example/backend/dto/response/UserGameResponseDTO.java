@@ -1,18 +1,18 @@
-package com.example.backend.dto;
+package com.example.backend.dto.response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class UserGameDTO {
-
+public class UserGameResponseDTO {
     private Long userId;
     private Long gameId;
-    private Long statusId;
-    private Integer rating;
+    private Double rating;
+    private Integer statusId;
+    private String statusName;
     private LocalDate completionDate;
     private LocalDateTime createdAt;
 
-    // Getters and Setters
+    // Getters and setters
 
     public Long getUserId() {
         return userId;
@@ -30,20 +30,28 @@ public class UserGameDTO {
         this.gameId = gameId;
     }
 
-    public Long getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(Long statusId) {
-        this.statusId = statusId;
-    }
-
-    public Integer getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 
     public LocalDate getCompletionDate() {

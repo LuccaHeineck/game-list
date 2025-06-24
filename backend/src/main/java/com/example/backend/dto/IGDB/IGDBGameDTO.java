@@ -1,10 +1,5 @@
-package com.example.backend.dto;
-import com.example.backend.model.Artwork;
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.example.backend.dto.IGDB;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class IGDBGameDTO {
@@ -16,7 +11,6 @@ public class IGDBGameDTO {
     private CoverDTO cover;
     private Long releaseDate;
     private ArrayList<Integer> artworksIds;
-
 
     public Long getId() {
         return id;

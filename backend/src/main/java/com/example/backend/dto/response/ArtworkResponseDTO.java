@@ -1,14 +1,16 @@
-package com.example.backend.dto;
+package com.example.backend.dto.response;
 
-public class CoverDTO {
-    private Integer id;
+public class ArtworkResponseDTO {
+    private Long id;
     private String url;
 
-    public Integer getId() {
+    // Getters and setters
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

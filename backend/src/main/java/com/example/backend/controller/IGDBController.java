@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.IGDBGameDTO;
+import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.service.IGDBService;
 import org.springframework.web.bind.annotation.*;
 

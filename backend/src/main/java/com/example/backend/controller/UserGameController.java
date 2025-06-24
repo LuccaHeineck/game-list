@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.UserDTO;
-import com.example.backend.dto.UserGameDTO;
+import com.example.backend.dto.response.UserGameResponseDTO;
 import com.example.backend.service.UserGameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +19,18 @@ public class UserGameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserGameDTO>> getUserGames() {
+    public ResponseEntity<List<UserGameResponseDTO>> getUserGames() {
         return ResponseEntity.ok(userGameService.getAllUserGames());
     }
 
     @PostMapping
-    public ResponseEntity<UserGameDTO> createUser(@RequestBody UserGameDTO userGameDTO) {
-        UserGameDTO createdUserGame = userGameService.createUserGame(userGameDTO);
+    public ResponseEntity<UserGameResponseDTO> createUser(@RequestBody UserGameResponseDTO userGameDTO) {
+        UserGameResponseDTO createdUserGame = userGameService.createUserGame(userGameDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUserGame);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserGameDTO> updateUserGame(@PathVariable Integer id, @RequestBody UserGameDTO userGameDTO) {
+    public ResponseEntity<UserGameResponseDTO> updateUserGame(@PathVariable Integer id, @RequestBody UserGameResponseDTO userGameDTO) {
         return ResponseEntity.ok(userGameService.updateUserGame(id, userGameDTO));
     }
 

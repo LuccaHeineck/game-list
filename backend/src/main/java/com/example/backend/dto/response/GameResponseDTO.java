@@ -1,12 +1,10 @@
-package com.example.backend.dto;
+package com.example.backend.dto.response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
-public class GameDTO {
-
+public class GameResponseDTO {
     private Long id;
     private String name;
     private String summary;
@@ -14,10 +12,10 @@ public class GameDTO {
     private String coverUrl;
     private Double rating;
     private LocalDateTime createdAt;
-    private List<Long> userGames; // List of user game IDs (assuming you want just the IDs)
-    private Set<Long> artworkIds; // Set of artwork IDs
 
-    // Getters and Setters
+    private List<String> artworkUrls; // List of artwork URLs for the game
+
+    // Getters and setters
 
     public Long getId() {
         return id;
@@ -75,19 +73,11 @@ public class GameDTO {
         this.createdAt = createdAt;
     }
 
-    public List<Long> getUserGames() {
-        return userGames;
+    public List<String> getArtworkUrls() {
+        return artworkUrls;
     }
 
-    public void setUserGames(List<Long> userGames) {
-        this.userGames = userGames;
-    }
-
-    public Set<Long> getArtworkIds() {
-        return artworkIds;
-    }
-
-    public void setArtworkIds(Set<Long> artworkIds) {
-        this.artworkIds = artworkIds;
+    public void setArtworkUrls(List<String> artworkUrls) {
+        this.artworkUrls = artworkUrls;
     }
 }

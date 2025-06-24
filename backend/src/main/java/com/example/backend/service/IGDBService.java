@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.IGDBGameDTO;
+import com.example.backend.dto.IGDB.IGDBGameDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +30,7 @@ public class IGDBService {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
-        String body = "search \"" + query + "\"; fields id,name,rating,summary,cover.url;";
+        String body = "search \"" + query + "\"; fields id,name,rating,summary,cover.url,first_release_date,artworks;";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 

@@ -1,6 +1,6 @@
 package com.example.backend.configuration;
 
-import com.example.backend.dto.UserDTO;
+import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.model.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -14,7 +14,7 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        modelMapper.addMappings(new PropertyMap<UserDTO, User>() {
+        modelMapper.addMappings(new PropertyMap<UserResponseDTO, User>() {
             @Override
             protected void configure() {
                 skip(destination.getCreatedAt()); // Skip createdAt during mapping
