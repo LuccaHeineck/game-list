@@ -1,30 +1,23 @@
 package com.example.backend.dto;
 
-import jakarta.persistence.Column;
-import org.hibernate.annotations.ColumnDefault;
-
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class UserDTO {
-    private Integer id;
+
+    private Long id;
     private String username;
     private String email;
-    private String password;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
+    private List<Long> gameIds; // List of game IDs (assuming you just need the IDs from UserGame)
 
-    public UserDTO() {}
+    // Getters and Setters
 
-    public UserDTO(String username, String email) {
-        this.username = username;
-        this.email = email;
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -44,19 +37,19 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Timestamp getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<Long> getGameIds() {
+        return gameIds;
+    }
+
+    public void setGameIds(List<Long> gameIds) {
+        this.gameIds = gameIds;
     }
 }

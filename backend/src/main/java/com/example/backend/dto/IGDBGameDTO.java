@@ -1,21 +1,28 @@
 package com.example.backend.dto;
+import com.example.backend.model.Artwork;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class IGDBGameDTO {
 
-    private Integer id;
+    private Long id;
     private String name;
     private Double rating;
     private String summary;
     private CoverDTO cover;
+    private Long releaseDate;
+    private ArrayList<Integer> artworksIds;
 
-    public Integer getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -49,5 +56,21 @@ public class IGDBGameDTO {
 
     public void setCover(CoverDTO cover) {
         this.cover = cover;
+    }
+
+    public Long getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(Long releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public ArrayList<Integer> getArtworksIds() {
+        return artworksIds;
+    }
+
+    public void setArtworksIds(ArrayList<Integer> artworksIds) {
+        this.artworksIds = artworksIds;
     }
 }
