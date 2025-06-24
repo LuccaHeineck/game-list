@@ -1,90 +1,41 @@
 package com.example.backend.dto;
 
-import com.example.backend.model.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UserGameDTO {
 
-    private Integer id;
-    @JsonProperty("idUser")
-    private Integer idUser;
-    private Integer idGame;
-    private String gameName;
-    private String coverImage;
-    private String status;
-    private String genre;
-    private Integer yearOfRelease;
+    private Long userId;
+    private Long gameId;
+    private Long statusId;
     private Integer rating;
-    private Instant completionDate;
-    private String finalThoughts;
+    private LocalDate completionDate;
+    private LocalDateTime createdAt;
 
-    public Integer getId() {
-        return id;
+    // Getters and Setters
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Integer getIdUser() {
-        return idUser;
+    public Long getGameId() {
+        return gameId;
     }
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
-    public Integer getIdGame() {
-        return idGame;
+    public Long getStatusId() {
+        return statusId;
     }
 
-    public void setIdGame(Integer idGame) {
-        this.idGame = idGame;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
-
-    public String getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage) {
-        this.coverImage = coverImage;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public Integer getYearOfRelease() {
-        return yearOfRelease;
-    }
-
-    public void setYearOfRelease(Integer yearOfRelease) {
-        this.yearOfRelease = yearOfRelease;
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
     }
 
     public Integer getRating() {
@@ -95,19 +46,19 @@ public class UserGameDTO {
         this.rating = rating;
     }
 
-    public Instant getCompletionDate() {
+    public LocalDate getCompletionDate() {
         return completionDate;
     }
 
-    public void setCompletionDate(Instant completionDate) {
+    public void setCompletionDate(LocalDate completionDate) {
         this.completionDate = completionDate;
     }
 
-    public String getFinalThoughts() {
-        return finalThoughts;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setFinalThoughts(String finalThoughts) {
-        this.finalThoughts = finalThoughts;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -1,14 +1,12 @@
 package com.example.backend.repository;
 
-import com.example.backend.model.User;
 import com.example.backend.model.UserGame;
+import com.example.backend.model.UserGameId;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
-import java.util.Optional;
 
-@Repository
-public interface UserGameRepository extends JpaRepository<UserGame, Integer> {
-    List<UserGame> findByUser(User user);
+public interface UserGameRepository extends JpaRepository<UserGame, UserGameId> {
+    List<UserGame> findByUserId(Long userId);
+    List<UserGame> findByGameId(Long gameId);
+    List<UserGame> findByUserIdAndStatus_StatusId(Long userId, Integer statusId);
 }
