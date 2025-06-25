@@ -5,6 +5,7 @@ import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponseDTO createUser(UserRequestDTO dto, String passwordHash) {
@@ -40,5 +43,42 @@ public class UserService {
                 .stream()
                 .map(UserMapper::toDto)
                 .toList();
+    }
+
+    public Optional<UserResponseDTO> updateUser(Long id, UserRequestDTO dto) {
+        // Check if user exists
+        Optional<User> existingUserOpt = userRepository.findById(id);
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+
+            // Update fields with new data from DTO
+            existingUser.setUsername(dto.getUsername());
+            existingUser.setEmail(dto.getEmail());
+
+            // If the password is provided, hash and update it
+            if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+                String hashedPassword = passwordEncoder.encode(dto.getPassword());  // Hash the password
+                existingUser.setPasswordHash(hashedPassword);  // Set the hashed password
+            }
+
+            // Save updated user
+            User updatedUser = userRepository.save(existingUser);
+
+            // Return updated user as a DTO
+            return Optional.of(UserMapper.toDto(updatedUser));
+        }
+
+        return Optional.empty();  // If user does not exist, return empty
+    }
+
+
+
+    public boolean deleteUser(Long id) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            userRepository.delete(userOpt.get());
+            return true; // Deletion successful
+        }
+        return false;
     }
 }

@@ -1,47 +1,57 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.request.UserRequestDTO;
 import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserResponseDTO userDTO) {
-        UserResponseDTO createdUser = userService.createUser(userDTO);
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO dto) {
+        String hashedPassword = passwordEncoder.encode(dto.getPassword());
+        UserResponseDTO createdUser = userService.createUser(dto, hashedPassword);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Integer id, @RequestBody UserResponseDTO userDTO) {
-        UserResponseDTO updatedUser = userService.updateUser(id, userDTO);
+    @GetMapping
+    public List<UserResponseDTO> getAllUsers() {
+        return userService.getAllUsers();
+    }
 
-        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+        Optional<UserResponseDTO> user = userService.getUserById(id);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO dto) {
+        Optional<UserResponseDTO> updated = userService.updateUser(id, dto);
+        return updated.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> deleteUser(@PathVariable Integer id) {
-        UserResponseDTO deletedUser = userService.deleteUser(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(deletedUser);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        boolean deleted = userService.deleteUser(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
-
 }
-
