@@ -60,4 +60,20 @@ public class GameMapper {
         dto.setRating(game.getRating());
         return dto;
     }
+
+    public static GameResponseDTO fromIGDBToResponseDTO(IGDBGameDTO game) {
+        GameResponseDTO dto = new GameResponseDTO();
+        dto.setId(game.getId());
+        dto.setName(game.getName());
+        dto.setSummary(game.getSummary());
+        dto.setReleaseDate(
+                Instant.ofEpochSecond(game.getReleaseDate())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+        );
+        dto.setCoverUrl(game.getCover().getUrl());
+        dto.setRating(game.getRating());
+        return dto;
+    }
+
 }

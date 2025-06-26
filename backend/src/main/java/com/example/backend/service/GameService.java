@@ -43,7 +43,7 @@ public class GameService {
     }
 
     public GameResponseDTO getOrCreateGame(Long id) {
-        IGDBGameDTO igdbDto = igdbService.findGameById(id);
+        IGDBGameDTO igdbDto = igdbService.findIGDBGameById(id);
         GameRequestDTO dto = GameMapper.fromIGDBToRequestDTO(igdbDto);
 
         Optional<Game> existingGame = gameRepository.findByIgdbId(dto.getId());

@@ -2,7 +2,9 @@ package com.example.backend.service;
 
 import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.response.ArtworkResponseDTO;
+import com.example.backend.dto.response.GameResponseDTO;
 import com.example.backend.mapper.ArtworkMapper;
+import com.example.backend.mapper.GameMapper;
 import com.example.backend.model.Artwork;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -12,10 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class IGDBService {
 
+    private final ArtworkService artworkService;
     @Value("${access.token}")
     private String accessToken;
     @Value("${client.id}")
@@ -23,8 +27,9 @@ public class IGDBService {
 
     private final RestTemplate restTemplate;
 
-    public IGDBService(RestTemplate restTemplate) {
+    public IGDBService(RestTemplate restTemplate, ArtworkService artworkService) {
         this.restTemplate = restTemplate;
+        this.artworkService = artworkService;
     }
 
     public List<IGDBGameDTO> findGamesByName(String query) {
@@ -72,7 +77,7 @@ public class IGDBService {
         return headers;
     }
 
-    public IGDBGameDTO findGameById(Long id) {
+    public GameResponseDTO findGameById(Long id) {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
@@ -85,7 +90,36 @@ public class IGDBService {
         IGDBGameDTO[] games = response.getBody();
 
         if (games != null && games.length > 0) {
-            return games[0]; // There should only be one result for a unique ID
+            List<ArtworkResponseDTO> artworks = new ArrayList<>();
+            artworks = findArtworksByGameId(games[0].getId());
+
+            List<String> artworksUrls = artworks.stream()
+                    .map(ArtworkResponseDTO::getUrl)
+                    .toList();
+
+            GameResponseDTO gameResponseDTO = new GameResponseDTO();
+            gameResponseDTO = GameMapper.fromIGDBToResponseDTO(games[0]);
+            gameResponseDTO.setArtworkUrls(artworksUrls);
+            return gameResponseDTO;
+        } else {
+            throw new NoSuchElementException("Game with IGDB ID " + id + " not found");
+        }
+    }
+
+    public IGDBGameDTO findIGDBGameById(Long id) {
+        String url = "https://api.igdb.com/v4/games";
+        HttpHeaders headers = createHeaders();
+
+        String body = "where id = " + id + "; fields id,name,rating,summary,cover.url,first_release_date,artworks;";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<IGDBGameDTO[]> response = restTemplate.postForEntity(url, entity, IGDBGameDTO[].class);
+
+        IGDBGameDTO[] games = response.getBody();
+
+        if (games != null && games.length > 0) {
+            return games[0];
         } else {
             throw new NoSuchElementException("Game with IGDB ID " + id + " not found");
         }

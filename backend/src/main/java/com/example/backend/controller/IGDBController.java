@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.response.ArtworkResponseDTO;
+import com.example.backend.dto.response.GameResponseDTO;
 import com.example.backend.model.Game;
 import com.example.backend.service.IGDBService;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class IGDBController {
     }
 
     @GetMapping("/games/{igdbId}")
-    public IGDBGameDTO getGameByIgdbId(@PathVariable Long igdbId) {
+    public GameResponseDTO getGameByIgdbId(@PathVariable Long igdbId) {
         return igdBservice.findGameById(igdbId);
     }
 
