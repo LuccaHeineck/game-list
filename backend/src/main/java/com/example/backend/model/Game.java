@@ -15,6 +15,9 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "igdb_id", unique = true, nullable = false)
+    private Long igdbId;
+
     @Column(nullable = false)
     private String name;
 
@@ -43,12 +46,22 @@ public class Game {
     )
     private Set<Artwork> artworks = new HashSet<>();
 
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIgdbId() {
+        return igdbId;
+    }
+
+    public void setIgdbId(Long igdbId) {
+        this.igdbId = igdbId;
     }
 
     public String getName() {
@@ -115,4 +128,3 @@ public class Game {
         this.artworks = artworks;
     }
 }
-

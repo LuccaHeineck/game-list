@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ArtworkService {
@@ -25,9 +26,20 @@ public class ArtworkService {
                 .toList();
     }
 
-    public ArtworkResponseDTO getArtworkById(Long id) {
-        Artwork artwork = artworkRepository.findById(id)
+    public Artwork getArtworkById(Long id) {
+        return artworkRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Artwork not found with id: " + id));
-        return ArtworkMapper.toDto(artwork);
+    }
+
+    public Optional<Artwork> findByUrl(String url) {
+        return artworkRepository.findByUrl(url);
+    }
+
+    public Artwork createArtwork(Artwork artwork) {
+        return artworkRepository.save(artwork);
+    }
+
+    public void createArtworks(List<Artwork> artworks) {
+        artworkRepository.saveAll(artworks);
     }
 }

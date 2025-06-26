@@ -24,8 +24,8 @@ public class ArtworkController {
         return artworkService.getAllArtwork();
     }
 
-    @GetMapping("/{id}")
-    public ArtworkResponseDTO getArtworkById(@PathVariable Long id) {
-        return artworkService.getArtworkById(id);
-    }
+//    @GetMapping("/{id}")
+//    public ArtworkResponseDTO getArtworkById(@PathVariable Long id) {
+//        return artworkService.getArtworkById(id);
+//    }
 }

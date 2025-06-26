@@ -1,7 +1,10 @@
 package com.example.backend.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ArtworkResponseDTO {
     private Long id;
+    @JsonProperty("image_id")
     private String url;
 
     // Getters and setters

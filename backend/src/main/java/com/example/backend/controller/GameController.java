@@ -32,8 +32,8 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<GameResponseDTO> createGame(@RequestBody GameRequestDTO dto) {
-        GameResponseDTO created = gameService.createGame(dto);
+    public ResponseEntity<GameResponseDTO> createGame(@RequestParam Long id) {
+        GameResponseDTO created = gameService.getOrCreateGame(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

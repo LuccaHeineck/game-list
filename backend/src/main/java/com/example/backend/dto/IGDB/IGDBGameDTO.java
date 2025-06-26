@@ -1,5 +1,7 @@
 package com.example.backend.dto.IGDB;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 
 public class IGDBGameDTO {
@@ -9,7 +11,9 @@ public class IGDBGameDTO {
     private Double rating;
     private String summary;
     private CoverDTO cover;
+    @JsonProperty("first_release_date")
     private Long releaseDate;
+    @JsonProperty("artworks")
     private ArrayList<Integer> artworksIds;
 
     public Long getId() {

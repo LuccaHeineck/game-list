@@ -1,15 +1,28 @@
 package com.example.backend.dto.request;
 
+import com.example.backend.dto.IGDB.CoverDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 public class GameRequestDTO {
+    private Long id;
     private String name;
     private String summary;
-    private LocalDate releaseDate;
-    private String coverUrl;
+    @JsonProperty("first_release_date")
+    private Long releaseDate;
+    private CoverDTO cover;
     private Double rating;
 
     // Getters and setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -27,20 +40,20 @@ public class GameRequestDTO {
         this.summary = summary;
     }
 
-    public LocalDate getReleaseDate() {
+    public Long getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
+    public void setReleaseDate(Long releaseDate) {
         this.releaseDate = releaseDate;
     }
 
-    public String getCoverUrl() {
-        return coverUrl;
+    public CoverDTO getCover() {
+        return cover;
     }
 
-    public void setCoverUrl(String coverUrl) {
-        this.coverUrl = coverUrl;
+    public void setCover(CoverDTO cover) {
+        this.cover = cover;
     }
 
     public Double getRating() {

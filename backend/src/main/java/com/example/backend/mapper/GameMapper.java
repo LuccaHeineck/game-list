@@ -1,9 +1,12 @@
 package com.example.backend.mapper;
 
+import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.request.GameRequestDTO;
 import com.example.backend.dto.response.GameResponseDTO;
 import com.example.backend.model.Game;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.stream.Collectors;
 
 public class GameMapper {
@@ -33,12 +36,28 @@ public class GameMapper {
 
     public static Game fromRequest(GameRequestDTO dto) {
         Game game = new Game();
+        game.setIgdbId(dto.getId());
         game.setName(dto.getName());
         game.setSummary(dto.getSummary());
-        game.setReleaseDate(dto.getReleaseDate());
-        game.setCoverUrl(dto.getCoverUrl());
+        game.setReleaseDate(
+                Instant.ofEpochSecond(dto.getReleaseDate())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+        );
+        game.setCoverUrl(dto.getCover().getUrl());
         game.setRating(dto.getRating());
         game.setCreatedAt(java.time.LocalDateTime.now());
         return game;
+    }
+
+    public static GameRequestDTO fromIGDBToRequestDTO(IGDBGameDTO game) {
+        GameRequestDTO dto = new GameRequestDTO();
+        dto.setId(game.getId());
+        dto.setName(game.getName());
+        dto.setSummary(game.getSummary());
+        dto.setReleaseDate(game.getReleaseDate());
+        dto.setCover(game.getCover());
+        dto.setRating(game.getRating());
+        return dto;
     }
 }

@@ -11,4 +11,10 @@ public class ArtworkMapper {
         dto.setUrl(artwork.getUrl());
         return dto;
     }
+
+    public static Artwork fromRequest(ArtworkResponseDTO artworkResponseDTO) {
+        Artwork artwork = new Artwork();
+        artwork.setUrl(artworkResponseDTO.getUrl());
+        return artwork;
+    }
 }

@@ -1,6 +1,9 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.IGDB.IGDBGameDTO;
+import com.example.backend.dto.response.ArtworkResponseDTO;
+import com.example.backend.mapper.ArtworkMapper;
+import com.example.backend.model.Artwork;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -8,9 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class IGDBService {
@@ -45,10 +46,49 @@ public class IGDBService {
         }
     }
 
+    public List<ArtworkResponseDTO> findArtworksByGameId(Long id) {
+        String url = "https://api.igdb.com/v4/artworks";
+        HttpHeaders headers = createHeaders();
+
+        String body = "fields image_id; where game = " + id.toString() + ";";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<ArtworkResponseDTO[]> response = restTemplate.postForEntity(url, entity, ArtworkResponseDTO[].class);
+
+        if (response.getBody() != null) {
+            List<ArtworkResponseDTO> artworkDTOArray = Arrays.stream(response.getBody()).toList();
+
+            return artworkDTOArray;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Client-ID", clientId);
         return headers;
     }
+
+    public IGDBGameDTO findGameById(Long id) {
+        String url = "https://api.igdb.com/v4/games";
+        HttpHeaders headers = createHeaders();
+
+        String body = "where id = " + id + "; fields id,name,rating,summary,cover.url,first_release_date,artworks;";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<IGDBGameDTO[]> response = restTemplate.postForEntity(url, entity, IGDBGameDTO[].class);
+
+        IGDBGameDTO[] games = response.getBody();
+
+        if (games != null && games.length > 0) {
+            return games[0]; // There should only be one result for a unique ID
+        } else {
+            throw new NoSuchElementException("Game with IGDB ID " + id + " not found");
+        }
+    }
+
 }
