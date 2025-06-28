@@ -25,8 +25,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO dto) {
-        String hashedPassword = passwordEncoder.encode(dto.getPassword());
-        UserResponseDTO createdUser = userService.createUser(dto, hashedPassword);
+        UserResponseDTO createdUser = userService.createUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 

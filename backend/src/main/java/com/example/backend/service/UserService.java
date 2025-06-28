@@ -22,8 +22,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserResponseDTO createUser(UserRequestDTO dto, String passwordHash) {
-        User user = UserMapper.fromRequest(dto, passwordHash);
+    public UserResponseDTO createUser(UserRequestDTO dto) {
+        String hashedPassword = passwordEncoder.encode(dto.getPassword());
+        User user = UserMapper.fromRequest(dto, hashedPassword);
         User saved = userRepository.save(user);
         return UserMapper.toDto(saved);
     }
@@ -46,32 +47,25 @@ public class UserService {
     }
 
     public Optional<UserResponseDTO> updateUser(Long id, UserRequestDTO dto) {
-        // Check if user exists
         Optional<User> existingUserOpt = userRepository.findById(id);
         if (existingUserOpt.isPresent()) {
             User existingUser = existingUserOpt.get();
 
-            // Update fields with new data from DTO
             existingUser.setUsername(dto.getUsername());
             existingUser.setEmail(dto.getEmail());
 
             // If the password is provided, hash and update it
             if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-                String hashedPassword = passwordEncoder.encode(dto.getPassword());  // Hash the password
-                existingUser.setPasswordHash(hashedPassword);  // Set the hashed password
+                String hashedPassword = passwordEncoder.encode(dto.getPassword());
+                existingUser.setPasswordHash(hashedPassword);
             }
 
-            // Save updated user
             User updatedUser = userRepository.save(existingUser);
-
-            // Return updated user as a DTO
             return Optional.of(UserMapper.toDto(updatedUser));
         }
 
         return Optional.empty();  // If user does not exist, return empty
     }
-
-
 
     public boolean deleteUser(Long id) {
         Optional<User> userOpt = userRepository.findById(id);
@@ -81,4 +75,10 @@ public class UserService {
         }
         return false;
     }
+
+    public Optional<User> authenticate(String username, String rawPassword) {
+        return userRepository.findByUsername(username)
+                .filter(user -> passwordEncoder.matches(rawPassword, user.getPasswordHash()));
+    }
+
 }
