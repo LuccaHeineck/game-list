@@ -1,14 +1,7 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
-export async function fetchGames() {
-  const response = await fetch(`${API_BASE_URL}/games`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch games");
-  }
-  return await response.json();
-}
-
+// AUTH
 export async function loginUser(username, password) {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
@@ -19,6 +12,35 @@ export async function loginUser(username, password) {
   });
   if (!response.ok) {
     throw new Error("Login failed");
+  }
+  return await response.json();
+}
+
+export async function registerUser(username, email, password) {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, email, password }),
+  });
+  if (!response.ok) {
+    throw new Error("Regsitration failed");
+  }
+  return await response.json();
+}
+
+export async function fetchAllDBGames() {
+  const token = localStorage.getItem("token");
+  console.log(token);
+
+  const response = await fetch(`${API_BASE_URL}/api/games`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Unauthorized");
   }
   return await response.json();
 }

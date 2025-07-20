@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { loginUser } from "../api.js"
+import { registerUser } from "../api.js"
 
-export default function Login({ onLogin }) {
+export default function Register({ onRegister }) {
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -11,10 +12,10 @@ export default function Login({ onLogin }) {
     setError("");
 
     try {
-      const data = await loginUser(username, password);
+      const data = await registerUser(username, email, password);
       console.log(username, password)
       localStorage.setItem("token", data.token); // save token
-      onLogin(); // e.g. redirect to /games
+      onRegister(); // e.g. redirect to /games
     } catch (err) {
       setError("Invalid credentials");
     }
@@ -22,8 +23,16 @@ export default function Login({ onLogin }) {
 
   return (
     <div className="max-w-sm mx-auto mt-20 p-4 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Login</h2>
+      <h2 className="text-xl font-bold mb-4">Register</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <input
+          className="border p-2 rounded"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
         <input
           className="border p-2 rounded"
           type="username"
