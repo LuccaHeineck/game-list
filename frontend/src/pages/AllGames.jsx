@@ -38,34 +38,31 @@ export default function AllGames() {
 
 	return (
 		<div className="max-w-7xl mx-auto mt-10 px-4">
-			<h1 className="text-2xl font-semibold mb-6 text-center">Games</h1>
+  <h1 className="text-2xl font-semibold mb-6 text-center">Games</h1>
 
-			{/* Horizontal Scroll Carousel */}
-			<div className="overflow-x-auto">
-				<div className="flex gap-4 px-2 snap-x snap-mandatory scroll-smooth">
-					{games.map((game) => (
-						<div
-							key={game.id}
-							className="snap-start bg-white rounded-xl shadow p-2 hover:shadow-md transition text-sm w-36 flex-shrink-0"
-						>
-							<div className="w-full aspect-[3/4] rounded overflow-hidden mb-2">
-								<img
-									src={`https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`}
-									alt={game.name}
-									className="w-full h-full object-cover"
-								/>
-							</div>
-							<h2 className="font-semibold text-sm leading-tight">{game.name}</h2>
-							<p className="text-xs text-gray-500">
-								{new Date(game.releaseDate).toLocaleDateString()}
-							</p>
-							<span className="text-xs font-medium text-indigo-600">
-								⭐ {game.rating ?? "N/A"}
-							</span>
-						</div>
-					))}
-				</div>
-			</div>
-		</div>
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+    {games.map((game) => (
+      <div
+        key={game.id}
+        className="bg-white rounded-xl shadow hover:shadow-lg transition duration-300 overflow-hidden"
+      >
+        <img
+          src={`https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`}
+          alt={game.name}
+          className="w-full h-[300px] object-cover"
+        />
+        <div className="p-4">
+          <h2 className="text-lg text-black font-semibold truncate">{game.name}</h2>
+          <p className="text-sm text-gray-500 mb-1">
+            {game.genreNames.join(", ")}
+          </p>
+          <p className="text-sm text-black font-medium">⭐ {game.rating}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
 	);
 }

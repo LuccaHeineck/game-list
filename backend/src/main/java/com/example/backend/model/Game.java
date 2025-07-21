@@ -40,6 +40,14 @@ public class Game {
 
     @ManyToMany
     @JoinTable(
+            name = "game_genre",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<Genre> genres;
+
+    @ManyToMany
+    @JoinTable(
             name = "game_artwork",
             joinColumns = @JoinColumn(name = "game_id"),
             inverseJoinColumns = @JoinColumn(name = "artwork_id")
@@ -126,6 +134,14 @@ public class Game {
 
     public void setUserGames(List<UserGame> userGames) {
         this.userGames = userGames;
+    }
+
+    public Set<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
     }
 
     public Set<Artwork> getArtworks() {

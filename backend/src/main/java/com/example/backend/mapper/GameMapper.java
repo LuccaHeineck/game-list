@@ -5,6 +5,7 @@ import com.example.backend.dto.request.GameRequestDTO;
 import com.example.backend.dto.response.GameResponseDTO;
 import com.example.backend.model.Artwork;
 import com.example.backend.model.Game;
+import com.example.backend.model.Genre;
 import com.example.backend.model.Screenshot;
 
 import java.time.Instant;
@@ -22,6 +23,16 @@ public class GameMapper {
         dto.setCoverUrl(game.getCoverUrl());
         dto.setRating(game.getRating());
         dto.setCreatedAt(game.getCreatedAt());
+
+        // Convert genre entities to list of names
+        if (game.getGenres() != null) {
+            dto.setGenreNames(
+                    game.getGenres()
+                            .stream()
+                            .map(Genre::getName)
+                            .collect(Collectors.toList())
+            );
+        }
 
         // Convert artwork entities to list of URLs
         if (game.getArtworks() != null) {
@@ -70,6 +81,7 @@ public class GameMapper {
         dto.setReleaseDate(game.getReleaseDate());
         dto.setCover(game.getCover());
         dto.setRating(game.getRating());
+        dto.setGenreIds(game.getGenreIds());
         return dto;
     }
 

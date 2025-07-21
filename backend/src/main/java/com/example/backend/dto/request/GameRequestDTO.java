@@ -4,6 +4,7 @@ import com.example.backend.dto.IGDB.CoverDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class GameRequestDTO {
     private Long id;
@@ -13,6 +14,7 @@ public class GameRequestDTO {
     private Long releaseDate;
     private CoverDTO cover;
     private Double rating;
+    private ArrayList<Integer> genreIds;
 
     // Getters and setters
 
@@ -62,5 +64,13 @@ public class GameRequestDTO {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public ArrayList<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(ArrayList<Integer> genreIds) {
+        this.genreIds = genreIds;
     }
 }

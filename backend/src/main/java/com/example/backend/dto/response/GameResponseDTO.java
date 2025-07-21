@@ -13,6 +13,7 @@ public class GameResponseDTO {
     private Double rating;
     private LocalDateTime createdAt;
 
+    private List<String> genreNames; // List of genre names for the game
     private List<String> artworkUrls; // List of artwork URLs for the game
     private List<String> screenshotUrls; // List of screenshot URLs for the game
 
@@ -72,6 +73,14 @@ public class GameResponseDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<String> getGenreNames() {
+        return genreNames;
+    }
+
+    public void setGenreNames(List<String> genreNames) {
+        this.genreNames = genreNames;
     }
 
     public List<String> getArtworkUrls() {

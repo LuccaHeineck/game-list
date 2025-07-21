@@ -13,6 +13,8 @@ public class IGDBGameDTO {
     private CoverDTO cover;
     @JsonProperty("first_release_date")
     private Long releaseDate;
+    @JsonProperty("genres")
+    private ArrayList<Integer> genreIds;
     @JsonProperty("artworks")
     private ArrayList<Integer> artworksIds;
 
@@ -62,6 +64,14 @@ public class IGDBGameDTO {
 
     public void setReleaseDate(Long releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public ArrayList<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(ArrayList<Integer> genreIds) {
+        this.genreIds = genreIds;
     }
 
     public ArrayList<Integer> getArtworksIds() {

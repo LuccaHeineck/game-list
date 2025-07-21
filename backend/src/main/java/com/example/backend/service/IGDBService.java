@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.response.ArtworkResponseDTO;
 import com.example.backend.dto.response.GameResponseDTO;
+import com.example.backend.dto.response.GenreResponseDTO;
 import com.example.backend.dto.response.ScreenshotResponseDTO;
 import com.example.backend.mapper.ArtworkMapper;
 import com.example.backend.mapper.GameMapper;
@@ -51,6 +52,30 @@ public class IGDBService {
             return Collections.emptyList();
         }
     }
+
+    public List<GenreResponseDTO> findGenresByIds(List<Integer> ids) {
+        String url = "https://api.igdb.com/v4/genres";
+        HttpHeaders headers = createHeaders();
+
+        // Convert list of IDs to comma-separated string
+        String joinedIds = ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        // Build IGDB query to fetch genres by ID
+        String body = "fields name; where id = (" + joinedIds + ");";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<GenreResponseDTO[]> response = restTemplate.postForEntity(url, entity, GenreResponseDTO[].class);
+
+        if (response.getBody() != null) {
+            return Arrays.asList(response.getBody());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
 
     public List<ArtworkResponseDTO> findArtworksByGameId(Long id) {
         String url = "https://api.igdb.com/v4/artworks";
@@ -130,7 +155,7 @@ public class IGDBService {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
-        String body = "where id = " + id + "; fields id,name,rating,summary,cover.url,first_release_date,artworks;";
+        String body = "where id = " + id + "; fields id,name,rating,summary,genres,cover.url,first_release_date,artworks;";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
