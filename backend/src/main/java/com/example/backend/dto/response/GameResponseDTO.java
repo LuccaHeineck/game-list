@@ -14,6 +14,7 @@ public class GameResponseDTO {
     private LocalDateTime createdAt;
 
     private List<String> artworkUrls; // List of artwork URLs for the game
+    private List<String> screenshotUrls; // List of screenshot URLs for the game
 
     // Getters and setters
 
@@ -79,5 +80,13 @@ public class GameResponseDTO {
 
     public void setArtworkUrls(List<String> artworkUrls) {
         this.artworkUrls = artworkUrls;
+    }
+
+    public List<String> getScreenshotUrls() {
+        return screenshotUrls;
+    }
+
+    public void setScreenshotUrls(List<String> screenshotUrls) {
+        this.screenshotUrls = screenshotUrls;
     }
 }

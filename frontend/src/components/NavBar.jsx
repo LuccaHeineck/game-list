@@ -1,20 +1,64 @@
-// src/components/Navbar.jsx
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { UserIcon } from "@heroicons/react/24/solid";
 
-export default function Navbar() {
+export default function NavBar() {
+	const [username, setUsername] = useState(null);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const storedUsername = localStorage.getItem("username");
+		const token = localStorage.getItem("token");
+		if (token && storedUsername) {
+			setUsername(storedUsername);
+		}
+	}, []);
+
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		localStorage.removeItem("username");
+		setUsername(null);
+		navigate("/login");
+	};
+
 	return (
-		<nav className="bg-indigo-600 text-white p-4 shadow">
+		<nav className="bg-blue-800 p-4 shadow text-white">
 			<div className="max-w-7xl mx-auto flex justify-between items-center">
-				<Link to="/" className="text-xl font-bold">
-					MyGameApp
-				</Link>
-				<div className="space-x-4">
+				{/* Left: Home */}
+				<div>
+					<Link to="/" className="text-xl font-bold">
+						MyGameApp
+					</Link>
+				</div>
+
+				{/* Center: Games & List */}
+				<div className="space-x-6 text-lg">
 					<Link to="/games" className="hover:underline">
 						Games
 					</Link>
-					<Link to="/login" className="hover:underline">
-						Login
+					<Link to="/list" className="hover:underline">
+						List
 					</Link>
+				</div>
+
+				{/* Right: User Info or Login */}
+				<div className="flex items-center gap-3">
+					{username ? (
+						<>
+							<UserIcon className="w-5 h-5 text-white" />
+							<span className="font-medium">{username}</span>
+							<button
+								onClick={handleLogout}
+								className="text-sm bg-red-500 hover:bg-red-600 px-2 py-1 rounded"
+							>
+								Logout
+							</button>
+						</>
+					) : (
+						<Link to="/login" className="hover:underline">
+							Login
+						</Link>
+					)}
 				</div>
 			</div>
 		</nav>

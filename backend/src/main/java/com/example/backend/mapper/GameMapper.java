@@ -3,7 +3,9 @@ package com.example.backend.mapper;
 import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.request.GameRequestDTO;
 import com.example.backend.dto.response.GameResponseDTO;
+import com.example.backend.model.Artwork;
 import com.example.backend.model.Game;
+import com.example.backend.model.Screenshot;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -26,7 +28,17 @@ public class GameMapper {
             dto.setArtworkUrls(
                     game.getArtworks()
                             .stream()
-                            .map(artwork -> artwork.getUrl())
+                            .map(Artwork::getUrl)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        // Convert screenshot entities to list of URLs
+        if (game.getScreenshots() != null) {
+            dto.setScreenshotUrls(
+                    game.getScreenshots()
+                            .stream()
+                            .map(Screenshot::getUrl)
                             .collect(Collectors.toList())
             );
         }

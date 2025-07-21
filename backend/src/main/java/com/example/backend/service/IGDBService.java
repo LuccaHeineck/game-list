@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.response.ArtworkResponseDTO;
 import com.example.backend.dto.response.GameResponseDTO;
+import com.example.backend.dto.response.ScreenshotResponseDTO;
 import com.example.backend.mapper.ArtworkMapper;
 import com.example.backend.mapper.GameMapper;
 import com.example.backend.model.Artwork;
@@ -65,6 +66,25 @@ public class IGDBService {
             List<ArtworkResponseDTO> artworkDTOArray = Arrays.stream(response.getBody()).toList();
 
             return artworkDTOArray;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<ScreenshotResponseDTO> findScreenshotsByGameId(Long id) {
+        String url = "https://api.igdb.com/v4/screenshots";
+        HttpHeaders headers = createHeaders();
+
+        String body = "fields image_id; where game = " + id.toString() + ";";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<ScreenshotResponseDTO[]> response = restTemplate.postForEntity(url, entity, ScreenshotResponseDTO[].class);
+
+        if (response.getBody() != null) {
+            List<ScreenshotResponseDTO> screenshotDTOArray = Arrays.stream(response.getBody()).toList();
+
+            return screenshotDTOArray;
         } else {
             return Collections.emptyList();
         }

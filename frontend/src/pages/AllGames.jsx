@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // <-- Import navigation
+import { useNavigate } from "react-router-dom";
 import { fetchAllDBGames } from "../api";
 
 export default function AllGames() {
@@ -9,7 +9,6 @@ export default function AllGames() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		// Check auth token
 		const token = localStorage.getItem("token");
 		if (!token) {
 			navigate("/login");
@@ -39,30 +38,33 @@ export default function AllGames() {
 
 	return (
 		<div className="max-w-7xl mx-auto mt-10 px-4">
-			<h1 className="text-3xl font-bold mb-8 text-center">Games</h1>
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-				{games.map((game) => (
-					<div
-						key={game.id}
-						className="bg-white rounded-2xl shadow-lg p-4 hover:shadow-xl transition flex flex-col"
-					>
-						<div className="w-full aspect-square overflow-hidden rounded-xl mb-4">
-							<img
-								src={`https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`}
-								alt={game.name}
-								className="w-full h-full object-cover"
-							/>
+			<h1 className="text-2xl font-semibold mb-6 text-center">Games</h1>
+
+			{/* Horizontal Scroll Carousel */}
+			<div className="overflow-x-auto">
+				<div className="flex gap-4 px-2 snap-x snap-mandatory scroll-smooth">
+					{games.map((game) => (
+						<div
+							key={game.id}
+							className="snap-start bg-white rounded-xl shadow p-2 hover:shadow-md transition text-sm w-36 flex-shrink-0"
+						>
+							<div className="w-full aspect-[3/4] rounded overflow-hidden mb-2">
+								<img
+									src={`https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`}
+									alt={game.name}
+									className="w-full h-full object-cover"
+								/>
+							</div>
+							<h2 className="font-semibold text-sm leading-tight">{game.name}</h2>
+							<p className="text-xs text-gray-500">
+								{new Date(game.releaseDate).toLocaleDateString()}
+							</p>
+							<span className="text-xs font-medium text-indigo-600">
+								⭐ {game.rating ?? "N/A"}
+							</span>
 						</div>
-						<h2 className="text-xl font-semibold mb-1">{game.name}</h2>
-						<p className="text-sm text-gray-500 mb-2">
-							Released: {new Date(game.releaseDate).toLocaleDateString()}
-						</p>
-						<p className="text-sm text-gray-700 mb-2 line-clamp-4">{game.summary}</p>
-						<span className="mt-auto text-sm font-medium text-indigo-600">
-							⭐ {game.rating ?? "N/A"}
-						</span>
-					</div>
-				))}
+					))}
+				</div>
 			</div>
 		</div>
 	);

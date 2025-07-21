@@ -46,6 +46,14 @@ public class Game {
     )
     private Set<Artwork> artworks = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "game_screenshot",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "screenshot_id")
+    )
+    private Set<Screenshot> screenshots = new HashSet<>();
+
     // Getters and Setters
 
     public Long getId() {
@@ -126,5 +134,13 @@ public class Game {
 
     public void setArtworks(Set<Artwork> artworks) {
         this.artworks = artworks;
+    }
+
+    public Set<Screenshot> getScreenshots() {
+        return screenshots;
+    }
+
+    public void setScreenshots(Set<Screenshot> screenshots) {
+        this.screenshots = screenshots;
     }
 }
