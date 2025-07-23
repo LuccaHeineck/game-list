@@ -22,12 +22,12 @@ export default function NavBar() {
 	};
 
 	return (
-		<nav className="bg-blue-800 p-4 shadow text-white">
+		<nav className="bg-blue-800 p-4 shadow text-white fixed top-0 left-0 right-0 z-50">
 			<div className="max-w-7xl mx-auto flex justify-between items-center">
 				{/* Left: Home */}
 				<div>
 					<Link to="/" className="text-xl font-bold">
-						MyGameApp
+						Ludex
 					</Link>
 				</div>
 

@@ -43,22 +43,24 @@ export default function AllGames() {
   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
     {games.map((game) => (
       <div
-        key={game.id}
-        className="bg-white rounded-xl shadow hover:shadow-lg transition duration-300 overflow-hidden"
-      >
-        <img
-          src={`https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`}
-          alt={game.name}
-          className="w-full h-[300px] object-cover"
-        />
-        <div className="p-4">
-          <h2 className="text-lg text-black font-semibold truncate">{game.name}</h2>
-          <p className="text-sm text-gray-500 mb-1">
-            {game.genreNames.join(", ")}
-          </p>
-          <p className="text-sm text-black font-medium">⭐ {game.rating}</p>
-        </div>
-      </div>
+		key={game.id}
+		onClick={() => navigate("/gamedetails", { state: { game } })}
+		className="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition duration-300 overflow-hidden"
+	>
+		<img
+			src={`https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`}
+			alt={game.name}
+			className="w-full h-[300px] object-cover"
+		/>
+		<div className="p-4">
+			<h2 className="text-lg text-black font-semibold line-clamp-2">{game.name}</h2>
+			<p className="text-sm text-gray-500 mb-1">
+				{game.genreNames.join(", ")}
+			</p>
+			<p className="text-sm text-black font-medium">⭐ {game.rating}</p>
+		</div>
+	</div>
+
     ))}
   </div>
 </div>

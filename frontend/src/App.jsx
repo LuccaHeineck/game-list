@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import AllGames from "./pages/AllGames";
 import Home from "./pages/Home";
 import Layout from "./components/layout";
+import GameDetails from "./pages/GameDetails";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />} >
           <Route path="/games" element={<AllGames />} />
+          <Route path="/gamedetails" element={<GameDetails />} />
           <Route index element={<Home />} />
         </Route>
         <Route path="/login" element={<LoginWrapper />} />
