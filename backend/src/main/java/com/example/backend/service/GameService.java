@@ -218,7 +218,7 @@ public class GameService {
 
 
     public List<GameResponseDTO> findFullGamesInfoByName(String name) {
-        List<IGDBGameDTO> igdbList = igdbService.findGamesByName(name);
+        List<IGDBGameDTO> igdbList = igdbService.findGamesIdsByName(name);
         List<Long> ids = igdbList.stream()
                 .map(IGDBGameDTO::getId)
                 .toList();

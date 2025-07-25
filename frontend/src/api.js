@@ -44,6 +44,28 @@ export async function fetchAllDBGames() {
   return await response.json();
 }
 
+export async function fetchGamesByName(name) {
+  const token = localStorage.getItem("token");
+
+  // Encode the name for URL safety
+  const encodedName = encodeURIComponent(name);
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/IGDB/games?name=${encodedName}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Unauthorized");
+  }
+
+  return await response.json();
+}
+
 export async function fetchGameInfoById(id) {
   const token = localStorage.getItem("token");
 

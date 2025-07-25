@@ -54,7 +54,30 @@ public class IGDBService {
         }
     }
 
+    public List<IGDBGameDTO> findGamesIdsByName(String query) {
+        String url = "https://api.igdb.com/v4/games";
+        HttpHeaders headers = createHeaders();
+
+        String body = "search \"" + query + "\"; fields id;";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<IGDBGameDTO[]> response = restTemplate.postForEntity(url, entity, IGDBGameDTO[].class);
+
+        if (response.getBody() != null) {
+            IGDBGameDTO[] gameDTOArray = response.getBody();
+            List<IGDBGameDTO> gameDTOList = Arrays.asList(gameDTOArray);
+            return gameDTOList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     public List<GenreResponseDTO> findGenresByIds(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         String url = "https://api.igdb.com/v4/genres";
         HttpHeaders headers = createHeaders();
 

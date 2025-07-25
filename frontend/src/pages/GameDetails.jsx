@@ -1,24 +1,41 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Loader from "../components/Loader"; 
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ScreenshotCarousel from "../components/ScreenshotCarousel";
 import { StarIcon } from "@heroicons/react/24/solid";
 import ArtworkCarousel from "../components/ArtworkCarousel";
+import { fetchGameInfoById } from "../api";  // Make sure you import your fetch function
 
 export default function GameDetails() {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { gameid } = useParams();
+
+  const [game, setGame] = useState(state?.game || null);
+  const [loading, setLoading] = useState(!state?.game); // loading only if no game data yet
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!state?.game) {
+  setLoading(true);
+  setError(null);
+
+  fetchGameInfoById(gameid)
+    .then((data) => {
+      setGame(data);
+      document.title = data.name;
+      setLoading(false);
+    })
+    .catch((err) => {
+      setError(err.message || "Failed to load game");
+      setLoading(false);
       navigate("/games");
-    } else {
-      document.title = state.game.name; // Set the tab title to the game's name
-    }
-  }, [state, navigate]);
+    });
+}, [gameid, navigate]);
 
-  if (!state?.game) return null;
 
-  const { game } = state;
+  if (loading) return <Loader />;
+  if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
+  if (!game) return null;
 
   function truncateRating(rating) {
     const val = rating / 10;

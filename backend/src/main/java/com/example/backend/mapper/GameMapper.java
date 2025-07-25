@@ -16,7 +16,7 @@ public class GameMapper {
 
     public static GameResponseDTO toDto(Game game) {
         GameResponseDTO dto = new GameResponseDTO();
-        dto.setId(game.getId());
+        dto.setId(game.getIgdbId());
         dto.setName(game.getName());
         dto.setSummary(game.getSummary());
         dto.setReleaseDate(game.getReleaseDate());
@@ -90,12 +90,14 @@ public class GameMapper {
         dto.setId(game.getId());
         dto.setName(game.getName());
         dto.setSummary(game.getSummary());
-        dto.setReleaseDate(
-                Instant.ofEpochSecond(game.getReleaseDate())
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-        );
-        dto.setCoverUrl(game.getCover().getUrl());
+        if (game.getReleaseDate() != null) {
+            dto.setReleaseDate(
+                    Instant.ofEpochSecond(game.getReleaseDate())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+            );
+        }
+        if (game.getCover() != null) dto.setCoverUrl(game.getCover().getUrl());
         dto.setRating(game.getRating());
         return dto;
     }
