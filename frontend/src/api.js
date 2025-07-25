@@ -32,9 +32,22 @@ export async function registerUser(username, email, password) {
 
 export async function fetchAllDBGames() {
   const token = localStorage.getItem("token");
-  console.log(token);
 
   const response = await fetch(`${API_BASE_URL}/api/games`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Unauthorized");
+  }
+  return await response.json();
+}
+
+export async function fetchGameInfoById(id) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_BASE_URL}/api/games/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

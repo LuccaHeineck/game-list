@@ -11,6 +11,7 @@ import com.example.backend.model.Artwork;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -170,4 +171,36 @@ public class IGDBService {
         }
     }
 
+    public List<IGDBGameDTO> findIGDBGamesByIds(List<Long> ids) {
+        String url = "https://api.igdb.com/v4/games";
+        HttpHeaders headers = createHeaders();
+
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Build comma-separated list: (123, 456, 789)
+        String idList = ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+
+        String body = String.format(
+                "where id = (%s);\nfields id, name, rating, summary, genres, cover.url, first_release_date, artworks;",
+                idList
+        );
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<IGDBGameDTO[]> response = restTemplate.postForEntity(
+                url, entity, IGDBGameDTO[].class
+        );
+
+        IGDBGameDTO[] games = response.getBody();
+
+        if (games != null && games.length > 0) {
+            return Arrays.asList(games);
+        } else {
+            return Collections.emptyList();
+        }
+    }
 }

@@ -7,7 +7,7 @@ export default function Layout() {
 	return (
 		<div className="w-screen min-h-screen flex flex-col">
 			<NavBar />
-			<main className="flex-grow pt-16">
+			<main className="flex-grow">
 				<Outlet />
 			</main>
 			<Footer/>

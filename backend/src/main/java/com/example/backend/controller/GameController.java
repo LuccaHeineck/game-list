@@ -28,7 +28,7 @@ public class GameController {
 
     @GetMapping("/{id}")
     public GameResponseDTO getGameById(@PathVariable Long id) {
-        return gameService.getGameById(id);
+        return gameService.getFullGameInfoById(id);
     }
 
     @PostMapping
@@ -46,6 +46,11 @@ public class GameController {
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         gameService.deleteGame(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public List<GameResponseDTO> getGamesByName(@RequestParam String name) {
+        return gameService.findFullGamesInfoByName(name);
     }
 }
 

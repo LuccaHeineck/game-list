@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -142,5 +143,86 @@ public class GameService {
 
     public void deleteGame(Long id) {
         gameRepository.deleteById(id);
+    }
+
+    public GameResponseDTO getFullGameInfoById(Long id) {
+        IGDBGameDTO igdbDto = igdbService.findIGDBGameById(id);
+        GameRequestDTO dto = GameMapper.fromIGDBToRequestDTO(igdbDto);
+        Optional<Game> existingGame = gameRepository.findByIgdbId(dto.getId());
+
+        if (existingGame.isPresent()) {
+            return GameMapper.toDto(existingGame.get());
+        }
+
+        GameResponseDTO game = GameMapper.fromIGDBToResponseDTO(igdbDto);
+
+        game.setGenreNames(igdbService.findGenresByIds(dto.getGenreIds())
+                .stream()
+                .map(GenreResponseDTO::getName)
+                .collect(Collectors.toList()));
+        game.setArtworkUrls(igdbService.findArtworksByGameId(dto.getId())
+                .stream()
+                .map(ArtworkResponseDTO::getUrl)
+                .collect(Collectors.toList()));
+        game.setScreenshotUrls(igdbService.findScreenshotsByGameId(dto.getId())
+                .stream()
+                .map(ScreenshotResponseDTO::getUrl)
+                .collect(Collectors.toList()));
+
+        return game;
+    }
+
+    public List<GameResponseDTO> getFullGameInfoByIds(List<Long> ids) {
+        List<GameResponseDTO> results = new ArrayList<>();
+
+        // Fetch all IGDB games at once
+        List<IGDBGameDTO> igdbGames = igdbService.findIGDBGamesByIds(ids);
+
+        for (IGDBGameDTO igdbDto : igdbGames) {
+            GameRequestDTO dto = GameMapper.fromIGDBToRequestDTO(igdbDto);
+
+            Optional<Game> existingGame = gameRepository.findByIgdbId(dto.getId());
+            if (existingGame.isPresent()) {
+                results.add(GameMapper.toDto(existingGame.get()));
+                continue;
+            }
+
+            GameResponseDTO game = GameMapper.fromIGDBToResponseDTO(igdbDto);
+
+            game.setGenreNames(
+                    igdbService.findGenresByIds(dto.getGenreIds())
+                            .stream()
+                            .map(GenreResponseDTO::getName)
+                            .collect(Collectors.toList())
+            );
+
+            game.setArtworkUrls(
+                    igdbService.findArtworksByGameId(dto.getId())
+                            .stream()
+                            .map(ArtworkResponseDTO::getUrl)
+                            .collect(Collectors.toList())
+            );
+
+            game.setScreenshotUrls(
+                    igdbService.findScreenshotsByGameId(dto.getId())
+                            .stream()
+                            .map(ScreenshotResponseDTO::getUrl)
+                            .collect(Collectors.toList())
+            );
+
+            results.add(game);
+        }
+
+        return results;
+    }
+
+
+    public List<GameResponseDTO> findFullGamesInfoByName(String name) {
+        List<IGDBGameDTO> igdbList = igdbService.findGamesByName(name);
+        List<Long> ids = igdbList.stream()
+                .map(IGDBGameDTO::getId)
+                .toList();
+        if (ids.isEmpty()) { return new ArrayList<>(); }
+        return getFullGameInfoByIds(ids);
     }
 }

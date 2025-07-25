@@ -99,5 +99,4 @@ public class GameMapper {
         dto.setRating(game.getRating());
         return dto;
     }
-
 }

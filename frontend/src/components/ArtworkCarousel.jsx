@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-export default function ScreenshotCarousel({ screenshots }) {
+export default function ArtworkCarousel({ screenshots }) {
 	const containerRef = useRef(null);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [cardWidth, setCardWidth] = useState(0);
@@ -127,7 +127,7 @@ export default function ScreenshotCarousel({ screenshots }) {
 
 	return (
 		<div className="relative mt-10 select-none">
-			<h3 className="text-xl font-semibold mb-4">Screenshots</h3>
+			<h3 className="text-xl font-semibold mb-4">Artworks</h3>
 
 			<button
 				onClick={prev}
@@ -177,7 +177,7 @@ export default function ScreenshotCarousel({ screenshots }) {
 					onClick={() => setModalImage(null)}
 				>
 					<div
-						className="mt-16 relative max-w-[90vw] max-h-[90vh]"
+						className="relative max-w-[90vw] max-h-[90vh]"
 						onClick={(e) => e.stopPropagation()}
 					>
 						<button
