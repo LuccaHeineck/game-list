@@ -25,7 +25,7 @@ export default function QuoteBanner() {
         setCurrentIndex(nextIndex);
         setFade(true);
       }, 1000); // match duration of CSS transition
-    }, 8000);
+    }, 10000); //time to change
 
     return () => clearInterval(interval);
   }, [currentIndex]);
@@ -42,7 +42,7 @@ export default function QuoteBanner() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040404cc] to-[#040404]" />
 
       {/* Content container */}
-      <div className="relative max-w-3xl text-white drop-shadow-lg text-left pt-28">
+      <div className="relative max-w-3xl text-white drop-shadow-lg text-left pt-24">
         <p className="text-3xl md:text-5xl italic font-semibold mb-4">“{quote}”</p>
         <p className="text-xl md:text-2xl font-medium mb-1">— {who}</p>
         <p className="text-sm md:text-base text-gray-300">from {game}</p>

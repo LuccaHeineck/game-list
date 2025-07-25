@@ -27,7 +27,7 @@ export default function Footer() {
 					<h3 className="text-lg font-semibold mb-2">Contact</h3>
 					<ul className="space-y-1 text-sm">
 						<li>Email: luccacheineck@gmail.com</li>
-						<li>GitHub: <a href="https://github.com/LuccaHeineck" className="text-blue-900 hover:underline">yourprofile</a></li>
+						<li>GitHub: <a href="https://github.com/LuccaHeineck" className="text-blue-900 hover:underline">LuccaHeineck</a></li>
 					</ul>
 				</div>
 			</div>

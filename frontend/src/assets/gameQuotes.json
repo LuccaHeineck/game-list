@@ -12,18 +12,6 @@
     "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/sckdy0.jpg"
   },
   {
-    "quote": "The right man in the wrong place can make all the difference in the world.",
-    "game": "Half-Life 2",
-    "who": "G-Man",
-    "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/nnlfbf8blflrlmuarfej.jpg"
-  },
-  {
-    "quote": "Would you kindly?",
-    "game": "BioShock",
-    "who": "Atlas",
-    "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/rrcgbkynxfveglumhtlb.jpg"
-  },
-  {
     "quote": "I used to be an adventurer like you, then I took an arrow in the knee.",
     "game": "Skyrim",
     "who": "Guard",
@@ -42,9 +30,28 @@
     "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/gdgj7p0vo52jpwoxtm3v.jpg"
   },
   {
-    "quote": "Finish him!",
-    "game": "Mortal Kombat",
-    "who": "Announcer",
-    "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/sc81m6.jpg"
+    "quote": "Do not feel bad about it. We are alive, after all. And being alive is pretty much a constant stream of embarrassment.",
+    "game": "NieR: Automata",
+    "who": "Pod 153",
+    "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/ar5l1.jpg"
+  },
+  {
+    "quote": "Drinking alone is as bad as shitting in company...",
+    "game": "The Witcher 3: Wild Hunt",
+    "who": "Zoltan Chivay",
+    "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/sciabd.jpg"
+  },
+  {
+    "quote": "Science compels us to explode the sun!",
+    "game": "Outer Wilds",
+    "who": "Pye",
+    "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/t794u9kjqyfxhgvl5o2y.jpg"
+  },
+  {
+    "quote": "I Too Am 'Whooo.' But I’m Also 'Wheee!' So The 'Wheee' Balances The 'Whooo.",
+    "game": "Clair Obscur: Expedition 33",
+    "who": "Esquie",
+    "bannerUrl": "https://images.igdb.com/igdb/image/upload/t_1080p/ar3lza.jpg"
   }
+  
 ]

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Loader from "../components/Loader"; 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ScreenshotCarousel from "../components/ScreenshotCarousel";
@@ -16,22 +16,40 @@ export default function GameDetails() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-  setLoading(true);
-  setError(null);
-
-  fetchGameInfoById(gameid)
-    .then((data) => {
-      setGame(data);
-      document.title = data.name;
+    if (state?.game) {
+      setGame(state.game);
       setLoading(false);
-    })
-    .catch((err) => {
-      setError(err.message || "Failed to load game");
-      setLoading(false);
-      navigate("/games");
-    });
-}, [gameid, navigate]);
+      document.title = state.game.name;
+      window.scrollTo(0, 0);
+      return;
+    }
 
+    setLoading(true);
+    setError(null);
+
+    fetchGameInfoById(gameid)
+      .then((data) => {
+        setGame(data);
+        document.title = data.name;
+        setLoading(false);
+        window.scrollTo(0, 0); // 🔥 Scroll to top
+      })
+      .catch((err) => {
+        setError(err.message || "Failed to load game");
+        setLoading(false);
+        navigate("/games");
+      });
+  }, [gameid, navigate, state]);
+
+  const bannerUrl = useMemo(() => {
+    if (!game?.screenshotUrls?.length) return null;
+    const index = getRandomInt(game.screenshotUrls.length);
+    return `https://images.igdb.com/igdb/image/upload/t_1080p/${game.screenshotUrls[index]}.jpg`;
+  }, [game?.id]);
+
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
 
   if (loading) return <Loader />;
   if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
@@ -41,10 +59,6 @@ export default function GameDetails() {
     const val = rating / 10;
     return Math.floor(val * 100) / 100;
   }
-
-  const bannerUrl = game.screenshotUrls?.[0]
-    ? `https://images.igdb.com/igdb/image/upload/t_1080p/${game.screenshotUrls[0]}.jpg`
-    : null;
 
   return (
     <>

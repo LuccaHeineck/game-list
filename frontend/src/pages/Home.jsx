@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import SearchModal from "../components/SearchModal";
 import QuoteBanner from "../components/QuoteBanner";
 
 export default function Home() {
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		document.body.style.overflow = isSearchOpen ? "hidden" : "auto";
@@ -11,9 +13,12 @@ export default function Home() {
 
 
 	const handleGameSelect = (game) => {
-		// Handle selected game here (e.g., add to your list)
-		console.log("Selected game:", game);
-		setIsSearchOpen(false);
+		try {
+            navigate(`/gamedetails/${game.id}`);
+            setIsSearchOpen(false);
+          } catch (error) {
+            console.error("Failed to fetch detailed game info", error);
+          }
 	};
 
 	return (

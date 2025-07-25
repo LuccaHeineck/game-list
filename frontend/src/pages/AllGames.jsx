@@ -12,7 +12,7 @@ export default function AllGames() {
 
 	useEffect(() => {
 		document.title = "Discover";
-
+		
 		const token = localStorage.getItem("token");
 		if (!token) {
 			navigate("/login");
