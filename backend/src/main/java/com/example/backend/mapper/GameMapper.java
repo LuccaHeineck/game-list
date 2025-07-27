@@ -81,7 +81,7 @@ public class GameMapper {
         dto.setReleaseDate(game.getReleaseDate());
         dto.setCover(game.getCover());
         dto.setRating(game.getRating());
-        dto.setGenreIds(game.getGenreIds());
+        dto.setGenres(game.getGenres());
         return dto;
     }
 

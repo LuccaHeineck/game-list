@@ -66,8 +66,14 @@ public class GameService {
         // Create Game entity from DTO
         Game game = GameMapper.fromRequest(dto);
 
+
+        List<Integer> genreIds = dto.getGenres()
+                .stream()
+                .map(GenreResponseDTO::getId)
+                .collect(Collectors.toList());
+
         // Fetch genre names or DTOs from IGDB
-        List<GenreResponseDTO> genreDTOArray = igdbService.findGenresByIds(dto.getGenreIds());
+        List<GenreResponseDTO> genreDTOArray = igdbService.findGenresByIds(genreIds);
 
         // Fetch artwork URLs or DTOs from IGDB
         List<ArtworkResponseDTO> artworkDTOArray = igdbService.findArtworksByGameId(dto.getId());
@@ -156,7 +162,12 @@ public class GameService {
 
         GameResponseDTO game = GameMapper.fromIGDBToResponseDTO(igdbDto);
 
-        game.setGenreNames(igdbService.findGenresByIds(dto.getGenreIds())
+
+        List<Integer> genreIds = dto.getGenres()
+                .stream()
+                .map(GenreResponseDTO::getId)
+                .toList();
+        game.setGenreNames(igdbService.findGenresByIds(genreIds)
                 .stream()
                 .map(GenreResponseDTO::getName)
                 .collect(Collectors.toList()));
@@ -189,8 +200,13 @@ public class GameService {
 
             GameResponseDTO game = GameMapper.fromIGDBToResponseDTO(igdbDto);
 
+            List<Integer> genreIds = dto.getGenres()
+                    .stream()
+                    .map(GenreResponseDTO::getId)
+                    .toList();
+
             game.setGenreNames(
-                    igdbService.findGenresByIds(dto.getGenreIds())
+                    igdbService.findGenresByIds(genreIds)
                             .stream()
                             .map(GenreResponseDTO::getName)
                             .collect(Collectors.toList())

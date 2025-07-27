@@ -79,3 +79,37 @@ export async function fetchGameInfoById(id) {
   }
   return await response.json();
 }
+
+export async function fetchGamesByGenres() {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_BASE_URL}/api/IGDB/games-by-genres`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Unauthorized");
+  }
+  return await response.json();
+}
+
+export async function fetchGamesByGenre(genreId) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/IGDB/games-genres?genreId=${genreId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401) throw new Error("Unauthorized");
+    throw new Error("Failed to fetch games by genre");
+  }
+
+  return await response.json();
+}

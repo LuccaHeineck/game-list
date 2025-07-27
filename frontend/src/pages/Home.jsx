@@ -8,6 +8,7 @@ export default function Home() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		document.title = "Home";
 		document.body.style.overflow = isSearchOpen ? "hidden" : "auto";
 	}, [isSearchOpen]);
 

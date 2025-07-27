@@ -1,45 +1,36 @@
 import { useEffect, useState, useMemo } from "react";
 import Loader from "../components/Loader"; 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ScreenshotCarousel from "../components/ScreenshotCarousel";
 import { StarIcon } from "@heroicons/react/24/solid";
 import ArtworkCarousel from "../components/ArtworkCarousel";
-import { fetchGameInfoById } from "../api";  // Make sure you import your fetch function
+import { fetchGameInfoById } from "../api";
 
 export default function GameDetails() {
-  const { state } = useLocation();
   const navigate = useNavigate();
   const { gameid } = useParams();
 
-  const [game, setGame] = useState(state?.game || null);
-  const [loading, setLoading] = useState(!state?.game); // loading only if no game data yet
+  const [game, setGame] = useState(null);
+  const [loading, setLoading] = useState(true); // sempre inicia carregando
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (state?.game) {
-      setGame(state.game);
-      setLoading(false);
-      document.title = state.game.name;
-      window.scrollTo(0, 0);
-      return;
-    }
-
     setLoading(true);
     setError(null);
+    window.scrollTo(0, 0);
 
     fetchGameInfoById(gameid)
       .then((data) => {
         setGame(data);
-        document.title = data.name;
+        document.title = data.name || "Game Details";
         setLoading(false);
-        window.scrollTo(0, 0); // 🔥 Scroll to top
       })
       .catch((err) => {
         setError(err.message || "Failed to load game");
         setLoading(false);
         navigate("/games");
       });
-  }, [gameid, navigate, state]);
+  }, [gameid, navigate]);
 
   const bannerUrl = useMemo(() => {
     if (!game?.screenshotUrls?.length) return null;
@@ -62,16 +53,12 @@ export default function GameDetails() {
 
   return (
     <>
-      {/* Banner section */}
       {bannerUrl && (
         <div
           className="relative h-[32rem] w-full bg-center bg-cover"
           style={{ backgroundImage: `url(${bannerUrl})` }}
         >
-          {/* Smooth fade into #040404 */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#04040480] to-[#040404ff]" />
-
-          {/* Optional extra bottom fade to reinforce transition */}
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#040404] to-transparent" />
         </div>
       )}

@@ -179,7 +179,7 @@ public class IGDBService {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
-        String body = "where id = " + id + "; fields id,name,rating,summary,genres,cover.url,first_release_date,artworks;";
+        String body = "where id = " + id + "; fields id,name,rating,summary,genres.name,cover.url,first_release_date,artworks;";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
@@ -222,6 +222,29 @@ public class IGDBService {
 
         if (games != null && games.length > 0) {
             return Arrays.asList(games);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<IGDBGameDTO> findGamesByGenre(String genreId, int limit) {
+        String url = "https://api.igdb.com/v4/games";
+        HttpHeaders headers = createHeaders();
+
+        String body = "fields id,name,rating,summary,cover.url,first_release_date,genres.name;" +
+                " where game_type = 0 & genres = (" + genreId + ");" +
+                " sort total_rating_count desc;" +
+                " limit " + limit + ";";
+
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<IGDBGameDTO[]> response = restTemplate.postForEntity(url, entity, IGDBGameDTO[].class);
+
+        if (response.getBody() != null) {
+            IGDBGameDTO[] gameDTOArray = response.getBody();
+            List<IGDBGameDTO> gameDTOList = Arrays.asList(gameDTOArray);
+            return gameDTOList;
         } else {
             return Collections.emptyList();
         }

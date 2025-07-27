@@ -23,6 +23,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* totalmente invisível */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* scrollbar fina e discreta */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
 /*
 body {
   margin: 0;
