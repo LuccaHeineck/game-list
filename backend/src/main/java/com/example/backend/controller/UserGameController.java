@@ -45,4 +45,9 @@ public class UserGameController {
         userGameService.deleteUserGame(userId, gameId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<UserGameResponseDTO>> getUserGameByUserId(@PathVariable Long userId) {
+        return userGameService.findUserGamesByUserId(userId);
+    }
 }

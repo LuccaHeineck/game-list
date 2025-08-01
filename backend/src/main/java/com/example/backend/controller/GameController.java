@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.request.GameRequestDTO;
 import com.example.backend.dto.response.GameResponseDTO;
 import com.example.backend.dto.response.UserResponseDTO;
+import com.example.backend.mapper.GameMapper;
 import com.example.backend.service.GameService;
 import com.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -31,11 +32,11 @@ public class GameController {
         return gameService.getFullGameInfoById(id);
     }
 
-    @PostMapping
-    public ResponseEntity<GameResponseDTO> createGame(@RequestParam Long id) {
-        GameResponseDTO created = gameService.getOrCreateGame(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
+    //@PostMapping
+    //public ResponseEntity<GameResponseDTO> createGame(@RequestParam Long id) {
+        // TO DO GameResponseDTO created = GameMapper.toResponse(gameService.getOrCreateGame(id));
+      //  return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    //}
 
     @PutMapping("/{id}")
     public GameResponseDTO updateGame(@PathVariable Long id, @RequestBody GameRequestDTO dto) {

@@ -53,14 +53,14 @@ public class GameService {
         return GameMapper.toDto(game);
     }
 
-    public GameResponseDTO getOrCreateGame(Long id) {
+    public Game getOrCreateGame(Long id) {
         IGDBGameDTO igdbDto = igdbService.findIGDBGameById(id);
         GameRequestDTO dto = GameMapper.fromIGDBToRequestDTO(igdbDto);
 
         Optional<Game> existingGame = gameRepository.findByIgdbId(dto.getId());
 
         if (existingGame.isPresent()) {
-            return GameMapper.toDto(existingGame.get());
+            return existingGame.get();
         }
 
         // Create Game entity from DTO
@@ -125,9 +125,7 @@ public class GameService {
         game.setArtworks(gameArtworks);
         game.setScreenshots(gameScreenshots);
 
-        Game savedGame = gameRepository.save(game);
-
-        return GameMapper.toDto(savedGame);
+        return gameRepository.save(game);
     }
 
 

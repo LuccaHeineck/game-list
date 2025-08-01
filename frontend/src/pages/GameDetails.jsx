@@ -55,7 +55,7 @@ export default function GameDetails() {
     <>
       {bannerUrl && (
         <div
-          className="relative h-[32rem] w-full bg-center bg-cover"
+          className="relative h-[38rem] w-full bg-center bg-cover"
           style={{ backgroundImage: `url(${bannerUrl})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#04040480] to-[#040404ff]" />
@@ -63,7 +63,7 @@ export default function GameDetails() {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto -mt-96 relative z-10 px-4">
+      <div className="max-w-4xl mx-auto -mt-[28rem] relative z-10 px-4">
         <button onClick={() => navigate(-1)} className="mb-4 text-white-600 hover:underline">
           ← Back
         </button>

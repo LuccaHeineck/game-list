@@ -1,6 +1,7 @@
 package com.example.backend.dto.request;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UserGameRequestDTO {
     private Long userId;
@@ -8,6 +9,7 @@ public class UserGameRequestDTO {
     private Double rating;
     private Integer statusId;
     private LocalDate completionDate;
+    private LocalDateTime createdAt;
 
     // Getters and setters
 
@@ -49,5 +51,13 @@ public class UserGameRequestDTO {
 
     public void setCompletionDate(LocalDate completionDate) {
         this.completionDate = completionDate;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

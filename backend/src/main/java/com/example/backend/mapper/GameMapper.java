@@ -101,4 +101,16 @@ public class GameMapper {
         dto.setRating(game.getRating());
         return dto;
     }
+
+    public static Game fromResponse(GameResponseDTO dto) {
+        Game game = new Game();
+        game.setIgdbId(dto.getId());
+        game.setName(dto.getName());
+        game.setSummary(dto.getSummary());
+        game.setReleaseDate(dto.getReleaseDate());
+        game.setCoverUrl(dto.getCoverUrl());
+        game.setRating(dto.getRating());
+        game.setCreatedAt(java.time.LocalDateTime.now());
+        return game;
+    }
 }

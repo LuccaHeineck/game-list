@@ -12,7 +12,7 @@ public class UserGameMapper {
     public static UserGameResponseDTO toDto(UserGame userGame) {
         UserGameResponseDTO dto = new UserGameResponseDTO();
         dto.setUserId(userGame.getUser().getId());
-        dto.setGameId(userGame.getGame().getId());
+        dto.setGameId(userGame.getGame().getIgdbId());
         dto.setRating(userGame.getRating());
         dto.setStatusId(userGame.getStatus().getStatusId());
         dto.setStatusName(userGame.getStatus().getName());
@@ -28,7 +28,7 @@ public class UserGameMapper {
         userGame.setRating(dto.getRating());
         userGame.setStatus(status);
         userGame.setCompletionDate(dto.getCompletionDate());
-        userGame.setCreatedAt(java.time.LocalDateTime.now());
+        userGame.setCreatedAt(dto.getCreatedAt());
         return userGame;
     }
 }

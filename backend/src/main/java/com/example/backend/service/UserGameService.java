@@ -1,7 +1,9 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.request.UserGameRequestDTO;
+import com.example.backend.dto.response.GameResponseDTO;
 import com.example.backend.dto.response.UserGameResponseDTO;
+import com.example.backend.mapper.GameMapper;
 import com.example.backend.mapper.UserGameMapper;
 import com.example.backend.model.Game;
 import com.example.backend.model.Status;
@@ -13,10 +15,13 @@ import com.example.backend.repository.UserGameRepository;
 import com.example.backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 public class UserGameService {
@@ -25,15 +30,17 @@ public class UserGameService {
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final StatusRepository statusRepository;
+    private final GameService gameService;
 
     public UserGameService(UserGameRepository userGameRepository,
                            UserRepository userRepository,
                            GameRepository gameRepository,
-                           StatusRepository statusRepository) {
+                           StatusRepository statusRepository, GameService gameService) {
         this.userGameRepository = userGameRepository;
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.statusRepository = statusRepository;
+        this.gameService = gameService;
     }
 
     public List<UserGameResponseDTO> getAllUserGames() {
@@ -52,13 +59,20 @@ public class UserGameService {
     public UserGameResponseDTO addUserGame(UserGameRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        Game game = gameRepository.findById(dto.getGameId())
-                .orElseThrow(() -> new EntityNotFoundException("Game not found"));
+        Game game = gameService.getOrCreateGame(dto.getGameId()); // change this to return game so mapping is not transient
         Status status = statusRepository.findById(dto.getStatusId())
                 .orElseThrow(() -> new EntityNotFoundException("Status not found"));
 
+        Optional<UserGame> existing = userGameRepository.findByUserIdAndGameId(user.getId(), game.getId());
+        if (existing.isPresent()) {
+            throw new IllegalStateException("User already has this game added.");
+        }
+
+        dto.setCompletionDate(java.time.LocalDate.now());
+        dto.setCreatedAt(java.time.LocalDateTime.now());
+
         UserGame userGame = UserGameMapper.fromRequest(dto, user, game, status);
-        UserGame saved = userGameRepository.save(userGame);
+        UserGame saved = userGameRepository.save(userGame); // breaks
         return UserGameMapper.toDto(saved);
     }
 
@@ -80,5 +94,13 @@ public class UserGameService {
 
     public void deleteUserGame(Long userId, Long gameId) {
         userGameRepository.deleteByUserIdAndGameId(userId, gameId);
+    }
+
+    public ResponseEntity<List<UserGameResponseDTO>> findUserGamesByUserId(Long userId) {
+        List<UserGameResponseDTO> dtos = userGameRepository.findByUserId(userId).stream()
+                .map(UserGameMapper::toDto)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
     }
 }

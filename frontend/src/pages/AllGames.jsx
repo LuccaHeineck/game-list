@@ -116,7 +116,7 @@ export default function AllGames() {
 
 								if (Math.abs(distance) > 5) setIsDragging(true); // mark as drag
 
-								container.scrollLeft = scrollLeft - distance;
+								container.scrollLeft = scrollLeft - distance;	
 							}}
 							onMouseUp={(e) => {
 								e.currentTarget.dataset.dragging = "false";
