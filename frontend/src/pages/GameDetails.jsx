@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo } from "react";
-import Loader from "../components/Loader"; 
+import Loader from "../components/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import ScreenshotCarousel from "../components/ScreenshotCarousel";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { StarIcon, PlusIcon } from "@heroicons/react/24/solid";
 import ArtworkCarousel from "../components/ArtworkCarousel";
+import AddGameModal from "../components/AddGameModal";
 import { fetchGameInfoById } from "../api";
 
 export default function GameDetails() {
@@ -11,8 +12,9 @@ export default function GameDetails() {
   const { gameid } = useParams();
 
   const [game, setGame] = useState(null);
-  const [loading, setLoading] = useState(true); // sempre inicia carregando
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -42,14 +44,22 @@ export default function GameDetails() {
     return Math.floor(Math.random() * max);
   }
 
-  if (loading) return <Loader />;
-  if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
-  if (!game) return null;
-
   function truncateRating(rating) {
     const val = rating / 10;
     return Math.floor(val * 100) / 100;
   }
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  if (loading) return <Loader />;
+  if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
+  if (!game) return null;
 
   return (
     <>
@@ -75,7 +85,16 @@ export default function GameDetails() {
             className="w-64 h-96 object-cover rounded-md shadow flex-shrink-0"
           />
           <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-2">{game.name}</h1>
+            <div className="flex justify-between items-start mb-2">
+              <h1 className="text-3xl font-bold">{game.name}</h1>
+              <button
+                onClick={handleModalOpen}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 shadow-lg"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Add Game
+              </button>
+            </div>
 
             <div className="flex justify-between items-center mb-4">
               <p className="text-gray-600 dark:text-gray-400 mb-0">
@@ -101,6 +120,12 @@ export default function GameDetails() {
           <ArtworkCarousel screenshots={game.artworkUrls} />
         </div>
       </div>
+
+      <AddGameModal 
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+        game={game} 
+      />
     </>
   );
 }
