@@ -36,10 +36,14 @@ public class AuthenticationController {
         Optional<User> userOpt = userService.authenticate(request.getUsername(), request.getPassword());
 
         if (userOpt.isPresent()) {
-            String token = jwtUtil.generateToken(userOpt.get().getUsername());
-            return ResponseEntity.ok(new AuthResponse(token));
+            User user = userOpt.get();
+            String token = jwtUtil.generateToken(user.getUsername());
+
+            // Include userId in the response
+            return ResponseEntity.ok(new AuthResponse(token, user.getId()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
 }

@@ -113,3 +113,29 @@ export async function fetchGamesByGenre(genreId) {
 
   return await response.json();
 }
+
+export async function addGameToList(userGame) {
+  const token = localStorage.getItem("token");
+
+  try {
+    console.log(token);
+
+    const response = await fetch(`${API_BASE_URL}/api/user-games`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(userGame),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add game: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error adding game to list:", error);
+    throw error;
+  }
+}

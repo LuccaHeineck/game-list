@@ -15,6 +15,7 @@ export default function Login({ onLogin }) {
       console.log(username, password);
 
       localStorage.setItem("token", data.token);       // Save the token
+      localStorage.setItem("userId", data.userId);       // Save the token
       localStorage.setItem("username", username);      // Save the username too
 
       onLogin(); // e.g. redirect to /games or refresh layout
