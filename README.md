@@ -2,6 +2,17 @@
 
 Game List is a project for tracking and managing games. This repository aims to provide a simple and efficient way to organize, search, and display a collection of games.
 
+## Screenshots
+
+### Game List home page
+![Game List Screenshot](screenshots/gamelist1.png)
+
+### Discover page
+![Add Game Screenshot](screenshots/gamelist2.png)
+
+### Game Details page
+![Add Game Screenshot](screenshots/gamelist3.png)
+
 ## Features
 
 - Add, edit, and remove games from your list
