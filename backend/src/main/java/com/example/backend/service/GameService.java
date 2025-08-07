@@ -239,4 +239,8 @@ public class GameService {
         if (ids.isEmpty()) { return new ArrayList<>(); }
         return getFullGameInfoByIds(ids);
     }
+
+    public Optional<Game> findByIgdbId(Long id) {
+        return gameRepository.findByIgdbId(id);
+    }
 }

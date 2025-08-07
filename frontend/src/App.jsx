@@ -5,6 +5,7 @@ import AllGames from "./pages/AllGames";
 import Home from "./pages/Home";
 import Layout from "./components/layout";
 import GameDetails from "./pages/GameDetails";
+import GameList from "./pages/GameList";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Layout />} >
           <Route path="/games" element={<AllGames />} />
           <Route path="/gamedetails/:gameid" element={<GameDetails />} />
+          <Route path="/list" element={<GameList />} />
           <Route index element={<Home />} />
         </Route>
         <Route path="/login" element={<LoginWrapper />} />

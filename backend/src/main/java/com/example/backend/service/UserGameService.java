@@ -99,8 +99,13 @@ public class UserGameService {
     public ResponseEntity<List<UserGameResponseDTO>> findUserGamesByUserId(Long userId) {
         List<UserGameResponseDTO> dtos = userGameRepository.findByUserId(userId).stream()
                 .map(UserGameMapper::toDto)
+                .peek(dto -> {
+                    var game = gameService.findByIgdbId(dto.getGameId());
+                    game.ifPresent(value -> dto.setGame(GameMapper.toDto(value)));
+                })
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(dtos);
     }
+
 }

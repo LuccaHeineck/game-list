@@ -33,7 +33,7 @@ export default function AddGameModal({ isOpen, onClose, game }) {
 			gameId: game.id,
 			gameName: game.name,
 			rating: formData.rating ? parseFloat(formData.rating) : null,
-			statusId: 1,
+			statusId: 2,
             userId: localStorage.getItem("userId"),
             completionDate: "",
             createdAt: ""

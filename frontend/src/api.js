@@ -139,3 +139,23 @@ export async function addGameToList(userGame) {
     throw error;
   }
 }
+
+export async function fetchUserList() {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/user-games/user/${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Unauthorized");
+  }
+
+  return await response.json();
+}

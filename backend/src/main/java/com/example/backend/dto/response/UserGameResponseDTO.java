@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 public class UserGameResponseDTO {
     private Long userId;
+    private GameResponseDTO game;
     private Long gameId;
     private Double rating;
     private Integer statusId;
@@ -22,12 +23,12 @@ public class UserGameResponseDTO {
         this.userId = userId;
     }
 
-    public Long getGameId() {
-        return gameId;
+    public GameResponseDTO getGame() {
+        return game;
     }
 
-    public void setGameId(Long gameId) {
-        this.gameId = gameId;
+    public void setGame(GameResponseDTO game) {
+        this.game = game;
     }
 
     public Double getRating() {
@@ -68,5 +69,13 @@ public class UserGameResponseDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 }
