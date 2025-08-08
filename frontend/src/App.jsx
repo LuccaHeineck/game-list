@@ -6,17 +6,23 @@ import Home from "./pages/Home";
 import Layout from "./components/layout";
 import GameDetails from "./pages/GameDetails";
 import GameList from "./pages/GameList";
+import ProtectedRoute from "./components/ProtectedRoute"; // step 2
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />} >
-          <Route path="/games" element={<AllGames />} />
-          <Route path="/gamedetails/:gameid" element={<GameDetails />} />
-          <Route path="/list" element={<GameList />} />
-          <Route index element={<Home />} />
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Layout />}>
+            <Route path="/games" element={<AllGames />} />
+            <Route path="/gamedetails/:gameid" element={<GameDetails />} />
+            <Route path="/list" element={<GameList />} />
+            <Route index element={<Home />} />
+          </Route>
         </Route>
+
+        {/* Public routes */}
         <Route path="/login" element={<LoginWrapper />} />
         <Route path="/register" element={<RegisterWrapper />} />
       </Routes>
@@ -26,13 +32,11 @@ function App() {
 
 function LoginWrapper() {
   const navigate = useNavigate();
-
   return <Login onLogin={() => navigate("/")} />;
 }
 
 function RegisterWrapper() {
   const navigate = useNavigate();
-
   return <Register onRegister={() => navigate("/login")} />;
 }
 

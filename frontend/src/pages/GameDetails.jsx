@@ -78,7 +78,7 @@ export default function GameDetails() {
           ← Back
         </button>
 
-        <div className="flex flex-col md:flex-row gap-6 bg-white/10 dark:bg-zinc-900/30 backdrop-blur-md border border-white/20 dark:border-white/10 p-6 rounded-xl shadow-lg">
+        <div className="relative flex flex-col md:flex-row gap-6 bg-white/10 dark:bg-zinc-900/30 backdrop-blur-md border border-white/20 dark:border-white/10 p-6 rounded-xl shadow-lg">
           <img
             src={`https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`}
             alt={game.name}
@@ -87,13 +87,6 @@ export default function GameDetails() {
           <div className="flex-1">
             <div className="flex justify-between items-start mb-2">
               <h1 className="text-3xl font-bold">{game.name}</h1>
-              <button
-                onClick={handleModalOpen}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 shadow-lg"
-              >
-                <PlusIcon className="w-4 h-4" />
-                Add Game
-              </button>
             </div>
 
             <div className="flex justify-between items-center mb-4">
@@ -108,7 +101,17 @@ export default function GameDetails() {
               </div>
             </div>
 
-            <p className="font-light text-slate-400 whitespace-pre-line">{game.summary}</p>
+            <p className="font-light mb-20 text-slate-400 whitespace-pre-line">{game.summary}</p>
+
+            <button
+              onClick={handleModalOpen}
+              style={{ position: 'absolute', bottom: 30, right: 30 }}
+              className="flex items-center text-white/80 border border-white/80 gap-2 hover:bg-white hover:text-zinc-900 px-5 py-2 rounded-xl transition-colors duration-200 shadow-lg"
+
+            >
+              <PlusIcon className="w-4 h-4" />
+              Add Game
+            </button>
           </div>
         </div>
 

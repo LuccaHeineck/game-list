@@ -26,14 +26,14 @@ export default function Home() {
 		<div className="relative min-h-screen text-white">
 		<QuoteBanner />
 
-		<div className="flex flex-col items-center justify-center px-4">
+		<div className="-mt-[12rem] flex flex-col items-center justify-center px-4 relative z-20">
 			<h1 className="text-4xl font-bold mb-6">Welcome to Your Game Library</h1>
 			<p className="text-gray-400 mb-10 max-w-md text-center">
 			Start building your personal collection by adding your favorite games.
 			</p>
 			<button
 			onClick={() => setIsSearchOpen(true)}
-			className="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-white font-semibold transition"
+			className="px-6 py-3 bg-white/80 hover:bg-white rounded-lg text-zinc-900 font-semibold transition"
 			>
 			Add Your First Game
 			</button>

@@ -39,7 +39,7 @@ public class IGDBService {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
-        String body = "search \"" + query + "\"; fields id,name,rating,summary,cover.url,first_release_date,artworks;";
+        String body = "search \"" + query + "\"; fields id,name,rating,summary,cover.url,first_release_date,artworks; where game_type = (1,8,10,9,0);";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
