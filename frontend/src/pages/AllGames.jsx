@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchGamesByGenre } from "../api"; // fetch per genre
 import { CalendarIcon } from "@heroicons/react/24/solid";
-import Loader from "../components/Loader";
+import RotateLoader from "react-spinners/RotateLoader";
 
 const genres = [
 	{ id: 32, name: "Indie" },
@@ -95,7 +95,7 @@ export default function AllGames() {
 					</div>
 
 					{!loadedGenres[id] ? (
-						<div className="text-gray-500">Loading...</div>
+						<div className="text-gray-500 flex justify-center"><RotateLoader className="" color="#ccccccff" loading={true} size={20} /></div>
 					) : (
 						<div
 							className="relative -mx-4 px-4 overflow-x-auto overflow-auto scrollbar-hide"
