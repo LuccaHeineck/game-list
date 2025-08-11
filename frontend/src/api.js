@@ -159,3 +159,18 @@ export async function fetchUserList() {
 
   return await response.json();
 }
+
+export async function fetchStatusList() {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_BASE_URL}/api/status`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Unauthorized");
+  }
+
+  const data = await response.json();
+  return data;
+}

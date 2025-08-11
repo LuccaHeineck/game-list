@@ -1,132 +1,256 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { addGameToList } from "../api";
+import { addGameToList, fetchStatusList } from "../api";
+import {
+  CheckCircleIcon,
+  ClockIcon,
+  NoSymbolIcon,
+  SparklesIcon,
+  HandRaisedIcon,
+} from "@heroicons/react/24/outline";
+
+const ratingColors = [
+  "#ef4444", // red-ish at 0
+  "#f59e0b", // orange-ish at 2
+  "#eab308", // yellow-ish at 4
+  "#22c55e", // green-ish at 6
+  "#3b82f6", // blue-ish at 8
+  "#8b5cf6", // purple-ish at 10
+];
+
+function hexToRgb(hex) {
+  hex = hex.replace(/^#/, "");
+  if (hex.length === 3) {
+    hex = hex.split("").map((c) => c + c).join("");
+  }
+  const num = parseInt(hex, 16);
+  return {
+    r: (num >> 16) & 255,
+    g: (num >> 8) & 255,
+    b: num & 255,
+  };
+}
+
+function interpolateColor(value) {
+  const maxIndex = ratingColors.length - 1;
+  const scaled = (value / 10) * maxIndex;
+  const indexLow = Math.floor(scaled);
+  const indexHigh = Math.min(Math.ceil(scaled), maxIndex);
+  const ratio = scaled - indexLow;
+
+  const color1 = hexToRgb(ratingColors[indexLow]);
+  const color2 = hexToRgb(ratingColors[indexHigh]);
+
+  const r = Math.round(color1.r + (color2.r - color1.r) * ratio);
+  const g = Math.round(color1.g + (color2.g - color1.g) * ratio);
+  const b = Math.round(color1.b + (color2.b - color1.b) * ratio);
+
+  return `rgb(${r},${g},${b})`;
+}
 
 export default function AddGameModal({ isOpen, onClose, game }) {
-	const [formData, setFormData] = useState({
-		rating: "",
-		status: ""
-	});
+  const [formData, setFormData] = useState({
+    rating: 5,
+    status: "",
+  });
+  const [statusOptions, setStatusOptions] = useState([]);
 
-	const statusOptions = [
-		{ value: "", label: "Select Status" },
-		{ value: "playing", label: "Currently Playing" },
-		{ value: "completed", label: "Completed" },
-		{ value: "paused", label: "Paused" },
-		{ value: "dropped", label: "Dropped" },
-		{ value: "plan_to_play", label: "Plan to Play" },
-		{ value: "backlog", label: "Backlog" }
-	];
+  const statusIcons = {
+    1: ClockIcon, // Pending
+    2: CheckCircleIcon, // Completed
+    3: NoSymbolIcon, // Cancelled
+    4: SparklesIcon, // Wish
+    5: HandRaisedIcon, // On hold
+  };
 
-	const handleInputChange = (e) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({
-			...prev,
-			[name]: value
-		}));
-	};
+  const selectedColors = {
+    1: "bg-yellow-500 shadow-yellow-400",
+    2: "bg-green-600 shadow-green-500",
+    3: "bg-red-600 shadow-red-500",
+    4: "bg-purple-600 shadow-purple-500",
+    5: "bg-orange-500 shadow-orange-400",
+  };
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
 
-		const userGameData = {
-			gameId: game.id,
-			gameName: game.name,
-			rating: formData.rating ? parseFloat(formData.rating) : null,
-			statusId: 2,
-            userId: localStorage.getItem("userId"),
-            completionDate: "",
-            createdAt: ""
-		};
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
-		try {
-			await addGameToList(userGameData);
-			alert("Game added successfully!");
-			setFormData({ rating: "", status: "" });
-			onClose();
-		} catch (error) {
-			alert("Failed to add game. Please try again.");
-		}
-	};
+  useEffect(() => {
+    if (isOpen) {
+      fetchStatusList().then((data) => {
+        setStatusOptions(
+          data.map((status) => ({
+            value: status.statusId,
+            label: status.name,
+          }))
+        );
+      });
+    }
+  }, [isOpen]);
 
-	const handleClose = () => {
-		setFormData({ rating: "", status: "" });
-		onClose();
-	};
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "rating" ? Number(value) : value,
+    }));
+  };
 
-	if (!isOpen) return null;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-			<div className="bg-white dark:bg-zinc-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-				<div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-zinc-700">
-					<h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-						Add "{game.name}" to Your Library
-					</h2>
-					<button
-						onClick={handleClose}
-						className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-					>
-						<XMarkIcon className="w-6 h-6" />
-					</button>
+    const userGameData = {
+      gameId: game.id,
+      gameName: game.name,
+      rating: formData.rating ?? null,
+      statusId: formData.status,
+      userId: localStorage.getItem("userId"),
+      completionDate: "",
+      createdAt: "",
+    };
+
+    try {
+      await addGameToList(userGameData);
+      alert("Game added successfully!");
+      setFormData({ rating: 5, status: "" });
+      onClose();
+    } catch (error) {
+      alert("Failed to add game. Please try again.");
+    }
+  };
+
+  const handleClose = () => {
+    setFormData({ rating: 5, status: "" });
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  const sliderColor = interpolateColor(formData.rating);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-zinc-900 text-white max-w-3xl w-full max-h-[95vh] rounded-xl shadow-xl flex flex-col overflow-hidden border border-white/10 p-8"
+      >
+		{/* Header: Cover and Title + Rating */}
+		<div className="flex items-center gap-6 border-b border-white/20 pb-6">
+			{/* Cover */}
+			{game.coverUrl && (
+				<img
+				src={game.coverUrl.replace("t_thumb", "t_cover_big")}
+				alt={`${game.name} cover`}
+				className="w-40 h-56 object-cover rounded-xl shadow-lg flex-shrink-0"
+				/>
+			)}
+
+			{/* Title + current rating */}
+			<div className="flex flex-col justify-center">
+				<h2 className="text-5xl font-extrabold leading-tight">{game.name}</h2>
+				<div
+				className="mt-3 inline-flex items-center justify-center font-extrabold px-6 py-3 rounded-full text-4xl select-none drop-shadow-lg max-w-max"
+				style={{ color: interpolateColor(formData.rating), border: `3px solid ${interpolateColor(formData.rating)}` }}
+				>
+				{formData.rating.toFixed(1)}
 				</div>
-
-				<form onSubmit={handleSubmit} className="p-6 space-y-4">
-					<div>
-						<label htmlFor="rating" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-							Rating (Optional)
-						</label>
-						<input
-							type="number"
-							id="rating"
-							name="rating"
-							min="0"
-							max="10"
-							step="0.1"
-							value={formData.rating}
-							onChange={handleInputChange}
-							placeholder="Rate from 0 to 10"
-							className="w-full px-3 py-2 border border-gray-300 dark:border-zinc-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-700 dark:text-white"
-						/>
-					</div>
-
-					<div>
-						<label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-							Status *
-						</label>
-						<select
-							id="status"
-							name="status"
-							value={formData.status}
-							onChange={handleInputChange}
-							required
-							className="w-full px-3 py-2 border border-gray-300 dark:border-zinc-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-700 dark:text-white"
-						>
-							{statusOptions.map((option) => (
-								<option key={option.value} value={option.value}>
-									{option.label}
-								</option>
-							))}
-						</select>
-					</div>
-
-					<div className="flex justify-end space-x-3 pt-4">
-						<button
-							type="button"
-							onClick={handleClose}
-							className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-600 rounded-md transition-colors"
-						>
-							Cancel
-						</button>
-						<button
-							type="submit"
-							className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-sm"
-						>
-							Add Game
-						</button>
-					</div>
-				</form>
 			</div>
 		</div>
-	);
+
+        {/* Content below header: rating slider and status buttons */}
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 flex flex-col gap-8 flex-grow overflow-auto"
+        >
+          {/* Rating Slider */}
+          <div className="relative mt-6 mb-6">
+            <input
+              type="range"
+              id="rating"
+              name="rating"
+              min="0"
+              max="10"
+              step="0.1"
+              value={formData.rating}
+              onChange={handleInputChange}
+              className="w-full h-3 rounded-full cursor-pointer appearance-none"
+              style={{
+                background: `linear-gradient(to right, ${sliderColor} 0%, ${sliderColor} ${(formData.rating / 10) *
+                  100}%, #444 ${(formData.rating / 10) * 100}%, #444 100%)`,
+              }}
+            />
+            <div className="absolute top-6 left-0 w-full flex justify-between text-xs text-gray-400 px-1 select-none">
+              <span>0</span>
+              <span>10</span>
+            </div>
+          </div>
+
+          {/* Status Buttons */}
+          <div className="flex gap-3 mb-10">
+            {statusOptions.map((option) => {
+              const isSelected = formData.status === option.value;
+              const IconComponent = statusIcons[option.value];
+              const selectedColor =
+                selectedColors[option.value] || "bg-blue-600 shadow-blue-500";
+
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, status: option.value }))
+                  }
+                  className={`flex items-center justify-center gap-2 py-2 rounded-full text-white font-medium shadow-md transition
+						flex-grow
+						${
+              isSelected
+                ? `${selectedColor}`
+                : "bg-zinc-700 hover:bg-zinc-600"
+            }
+						`}
+                  aria-pressed={isSelected}
+                  style={{ minWidth: "0" }}
+                >
+                  {IconComponent && <IconComponent className="w-5 h-5" />}
+                  <span className="text-sm select-none">{option.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end space-x-4 pt-4">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="px-5 py-3 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-gray-300 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!formData.status}
+              className={`px-5 py-3 rounded-lg text-white font-semibold transition shadow-lg
+					${
+            formData.status
+              ? "bg-blue-600 hover:bg-blue-700"
+              : "bg-blue-400 cursor-not-allowed"
+          }
+					`}
+            >
+              Add Game
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
