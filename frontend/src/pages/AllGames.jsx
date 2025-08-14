@@ -95,7 +95,7 @@ export default function AllGames() {
 					</div>
 
 					{!loadedGenres[id] ? (
-						<div className="text-gray-500 flex justify-center"><RotateLoader className="" color="#ccccccff" loading={true} size={20} /></div>
+						<div className="text-gray-500 flex justify-center p-28"><RotateLoader className="" color="#ccccccff" loading={true} size={20} /></div>
 					) : (
 						<div
 							className="relative -mx-4 px-4 overflow-x-auto overflow-auto scrollbar-hide"

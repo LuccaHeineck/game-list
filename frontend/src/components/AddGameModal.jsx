@@ -231,18 +231,18 @@ export default function AddGameModal({ isOpen, onClose, game }) {
             <button
               type="button"
               onClick={handleClose}
-              className="px-5 py-3 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-gray-300 transition"
+              className="px-5 py-2 rounded-lg border border-white/80 hover:bg-zinc-600 text-zinc-300 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!formData.status}
-              className={`px-5 py-3 rounded-lg text-white font-semibold transition shadow-lg
+              className={`px-5 py-2 rounded-lg text-black font-semibold transition shadow-lg
 					${
             formData.status
-              ? "bg-blue-600 hover:bg-blue-700"
-              : "bg-blue-400 cursor-not-allowed"
+              ? "bg-white/90 hover:bg-white"
+              : "bg-white/50 cursor-not-allowed"
           }
 					`}
             >

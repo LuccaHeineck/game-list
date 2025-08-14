@@ -174,3 +174,47 @@ export async function fetchStatusList() {
   const data = await response.json();
   return data;
 }
+
+export async function updateGameInList(userGame) {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/user-games/${userGame.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(userGame),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update game: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating game in list:", error);
+    throw error;
+  }
+}
+
+export async function deleteGameFromList(gameId) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_BASE_URL}/api/user-games/${gameId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete game: ${response.statusText}`);
+  }
+
+  return await response.json();
+}
