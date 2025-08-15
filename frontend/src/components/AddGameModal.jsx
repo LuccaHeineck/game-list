@@ -119,15 +119,23 @@ export default function AddGameModal({ isOpen, onClose, game }) {
       createdAt: "",
     };
 
-    try {
-      await addGameToList(userGameData);
-      toast.success("Game added successfully!");
-      setFormData({ rating: 5, status: "" });
-      onClose();
-    } catch (error) {
-      toast.error("Failed to add game. Please try again.");
-    }
+    // Close the modal immediately
+    onClose();
+
+    // Show toast promise
+    toast.promise(
+      addGameToList(userGameData),
+      {
+        loading: "Adding game...",
+        success: <b>Game added successfully!</b>,
+        error: <b>Failed to add game. Please try again.</b>,
+      }
+    );
+
+    // Reset form after the promise resolves
+    setFormData({ rating: 5, status: "" });
   };
+
 
 
   const handleClose = () => {

@@ -8,6 +8,7 @@ import {
   SparklesIcon,
   HandRaisedIcon,
 } from "@heroicons/react/24/outline";
+import toast, { Toaster } from "react-hot-toast";
 
 const ratingColors = [
   "#ef4444", "#f59e0b", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6",
@@ -84,10 +85,10 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
     e.preventDefault();
     try {
       await updateGameInList({ ...entry.game, rating: formData.rating, statusId: formData.status });
-      alert("Game updated successfully!");
+      toast.success("Game updated successfully!");
       onClose();
     } catch {
-      alert("Failed to update game.");
+      toast.error("Failed to update game.");
     }
   };
 
