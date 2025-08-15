@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { updateGameInList, deleteGameFromList, fetchStatusList } from "../api";
+import { updateGameInList, fetchStatusList } from "../api";
 import {
   CheckCircleIcon,
   ClockIcon,
@@ -37,12 +37,9 @@ function interpolateColor(value) {
   return `rgb(${r},${g},${b})`;
 }
 
-export default function EditGameModal({ isOpen, onClose, entry }) {
+export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
   const [formData, setFormData] = useState({ rating: 5, status: "" });
   const [statusOptions, setStatusOptions] = useState([]);
-
-	console.log(isOpen, entry);
-	
 
   // Move hooks above any conditional return
   useEffect(() => {
@@ -62,8 +59,6 @@ export default function EditGameModal({ isOpen, onClose, entry }) {
     }
   }, [isOpen, entry]);
 
-  console.log(isOpen, entry);
-  
 
   if (!isOpen || !entry) return null;
 
@@ -93,18 +88,6 @@ export default function EditGameModal({ isOpen, onClose, entry }) {
       onClose();
     } catch {
       alert("Failed to update game.");
-    }
-  };
-
-  const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this game?")) {
-      try {
-        await deleteGameFromList(entry.game.id);
-        alert("Game deleted successfully!");
-        onClose();
-      } catch {
-        alert("Failed to delete game.");
-      }
     }
   };
 
@@ -191,7 +174,7 @@ export default function EditGameModal({ isOpen, onClose, entry }) {
             </button>
             <button
               type="button"
-              onClick={handleDelete}
+              onClick={() => onDelete(entry.game.id)}
               className="px-5 py-2 rounded-lg border border-red-600 hover:bg-red-700 text-red-300 transition"
             >
               Delete

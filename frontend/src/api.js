@@ -118,8 +118,6 @@ export async function addGameToList(userGame) {
   const token = localStorage.getItem("token");
 
   try {
-    console.log(token);
-
     const response = await fetch(`${API_BASE_URL}/api/user-games`, {
       method: "POST",
       headers: {
@@ -177,10 +175,13 @@ export async function fetchStatusList() {
 
 export async function updateGameInList(userGame) {
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
+  console.log(userGame);
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/user-games/${userGame.id}`,
+      `${API_BASE_URL}/api/user-games/user/${userId}/game/${userGame.id}`,
       {
         method: "PUT",
         headers: {
@@ -204,17 +205,26 @@ export async function updateGameInList(userGame) {
 
 export async function deleteGameFromList(gameId) {
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
-  const response = await fetch(`${API_BASE_URL}/api/user-games/${gameId}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/user-games/user/${userId}/game/${gameId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to delete game: ${response.statusText}`);
   }
 
-  return await response.json();
+  // If the response has content, parse it; otherwise, return null
+  if (response.status !== 204) {
+    return await response.json();
+  } else {
+    return null;
+  }
 }

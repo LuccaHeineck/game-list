@@ -77,7 +77,9 @@ public class UserGameService {
     }
 
     public UserGameResponseDTO updateUserGame(Long userId, Long gameId, UserGameRequestDTO dto) {
-        UserGame userGame = userGameRepository.findByUserIdAndGameId(userId, gameId)
+        Optional<Game> game = gameRepository.findByIgdbId(gameId);
+        if (game.isEmpty()) { throw new EntityNotFoundException("Game not found"); }
+        UserGame userGame = userGameRepository.findByUserIdAndGameId(userId, game.get().getId())
                 .orElseThrow(() -> new EntityNotFoundException("UserGame not found"));
 
         if (dto.getRating() != null) userGame.setRating(dto.getRating());
@@ -92,8 +94,11 @@ public class UserGameService {
         return UserGameMapper.toDto(updated);
     }
 
+    @Transactional
     public void deleteUserGame(Long userId, Long gameId) {
-        userGameRepository.deleteByUserIdAndGameId(userId, gameId);
+        Optional<Game> game = gameRepository.findByIgdbId(gameId);
+        if (game.isEmpty()) { throw new EntityNotFoundException("Game not found"); }
+        userGameRepository.deleteByUserIdAndGameId(userId, game.get().getId());
     }
 
     public ResponseEntity<List<UserGameResponseDTO>> findUserGamesByUserId(Long userId) {

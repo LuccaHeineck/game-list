@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { fetchUserList, fetchStatusList } from "../api";
+import { fetchUserList, fetchStatusList, deleteGameFromList } from "../api";
 import {
 	CalendarIcon,
 	ArrowUpIcon,
@@ -11,6 +11,8 @@ import Loader from "../components/Loader";
 import GameRow from "../components/GameRow";
 import EditGameModal from "../components/EditGameModal";
 import { useNavigate } from "react-router-dom";
+import ConfirmModal from "../components/ConfirmModal";
+import toast from "react-hot-toast";
 
 function SortIcon({ field, currentSort, currentOrder }) {
 	const isActive = currentSort === field;
@@ -43,6 +45,8 @@ export default function GameList() {
 	const [sortOrder, setSortOrder] = useState("desc");
 	const [modalGame, setModalGame] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [confirmDeleteGame, setConfirmDeleteGame] = useState(null);
+	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -62,11 +66,31 @@ export default function GameList() {
 			});
 	}, []);
 
-	const handleDelete = (id) => {
-		// TODO: call delete API here
-		console.log("Deleting game", id);
-		setModalGame(null); // close modal after deletion
+	const handleDeleteClick = (game) => {
+		setConfirmDeleteGame(game);
+		setIsConfirmOpen(true);
 	};
+
+	const confirmDelete = async () => {
+		if (!confirmDeleteGame) return;
+
+		try {
+			await deleteGameFromList(confirmDeleteGame.id);
+			setGames((prevGames) =>
+				prevGames.filter((entry) => entry.game.id !== confirmDeleteGame.id)
+			);
+			setConfirmDeleteGame(null);
+			setIsConfirmOpen(false);
+			setModalGame(null);
+			toast.success("Game deleted successfully!");
+		} catch (error) {
+			console.error(error);
+			setIsConfirmOpen(false);
+			toast.error("Failed to delete game.");
+		}
+	};
+
+
 
 	function onSortClick(field) {
 		if (sortBy === field) {
@@ -183,7 +207,14 @@ export default function GameList() {
 						isOpen={isModalOpen}
 						entry={modalGame}
 						onClose={() => setModalGame(null)}
-						onDelete={handleDelete}
+						onDelete={() => handleDeleteClick(modalGame?.game)}
+					/>
+					<ConfirmModal
+						isOpen={isConfirmOpen}
+						title="Delete Game"
+						message={`Are you sure you want to delete "${confirmDeleteGame?.name}"?`}
+						onConfirm={confirmDelete}
+						onCancel={() => setIsConfirmOpen(false)}
 					/>
 				</div>
 			</div>

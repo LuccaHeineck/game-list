@@ -7,10 +7,22 @@ import Layout from "./components/layout";
 import GameDetails from "./pages/GameDetails";
 import GameList from "./pages/GameList";
 import ProtectedRoute from "./components/ProtectedRoute"; // step 2
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          // Default options for all toasts
+          duration: 4000,
+          style: {
+            background: '#121212ff', // dark background
+            color: '#f9fafb',      // light text
+          },
+        }}
+      />
       <Routes>
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>

@@ -8,6 +8,8 @@ import {
   SparklesIcon,
   HandRaisedIcon,
 } from "@heroicons/react/24/outline";
+import toast, { Toaster } from "react-hot-toast";
+
 
 const ratingColors = [
   "#ef4444", // red-ish at 0
@@ -119,13 +121,14 @@ export default function AddGameModal({ isOpen, onClose, game }) {
 
     try {
       await addGameToList(userGameData);
-      alert("Game added successfully!");
+      toast.success("Game added successfully!");
       setFormData({ rating: 5, status: "" });
       onClose();
     } catch (error) {
-      alert("Failed to add game. Please try again.");
+      toast.error("Failed to add game. Please try again.");
     }
   };
+
 
   const handleClose = () => {
     setFormData({ rating: 5, status: "" });
