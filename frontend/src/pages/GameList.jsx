@@ -168,16 +168,19 @@ export default function GameList() {
 
 					return (
 						<button
-						key={status.statusId}
-						className={`flex items-center gap-2 px-4 py-2 rounded-full text-left transition-colors ${
+							key={status.statusId}
+							className={`flex items-center pr-5 justify-between gap-2 pl-4 py-2 rounded-full text-left transition-colors ${
 							isSelected
-							? `${statusConfig?.color} text-zinc-900`
-							: "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
-						}`}
-						onClick={() => setSelectedStatus(status.statusId)}
+								? `${statusConfig?.color} text-zinc-900`
+								: "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+							}`}
+							onClick={() => setSelectedStatus(status.statusId)}
 						>
-						{IconComponent && <IconComponent className="w-5 h-5" />}
-						<span>{status.name}</span> {statusCounts[status.statusId] ?? 0}
+							<div className="flex items-center gap-2">
+							{IconComponent && <IconComponent className="w-5 h-5" />}
+							<span>{status.name}</span>
+							</div>
+							<span>{statusCounts[status.statusId] ?? 0}</span>
 						</button>
 					);
 					})}

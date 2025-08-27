@@ -158,7 +158,7 @@ export default function AddGameModal({ isOpen, onClose, game }) {
                   onClick={() => setFormData((prev) => ({ ...prev, status: option.value }))}
                   className={`flex items-center justify-center gap-2 py-2 rounded-full font-medium shadow-md transition flex-grow ${
                     isSelected
-                      ? config.color.replace("text-", "bg-")
+                      ? `${config.color} text-zinc-900`
                       : "bg-zinc-700 hover:bg-zinc-600"
                   }`}
                   aria-pressed={isSelected}

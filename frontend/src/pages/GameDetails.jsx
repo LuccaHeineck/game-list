@@ -2,37 +2,54 @@ import { useEffect, useState, useMemo } from "react";
 import Loader from "../components/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import ScreenshotCarousel from "../components/ScreenshotCarousel";
-import { StarIcon, PlusIcon } from "@heroicons/react/24/solid";
+import { StarIcon, PlusIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import ArtworkCarousel from "../components/ArtworkCarousel";
 import AddGameModal from "../components/AddGameModal";
-import { fetchGameInfoById } from "../api";
+import { fetchGameInfoById, fetchUserList } from "../api";
 
 export default function GameDetails() {
   const navigate = useNavigate();
   const { gameid } = useParams();
-
   const [game, setGame] = useState(null);
+  const [gameList, setGameList] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
     setError(null);
     window.scrollTo(0, 0);
 
-    fetchGameInfoById(gameid)
-      .then((data) => {
-        setGame(data);
-        document.title = data.name || "Game Details";
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message || "Failed to load game");
-        setLoading(false);
+    const loadData = async () => {
+      try {
+        const [gameData, userList] = await Promise.all([
+          fetchGameInfoById(gameid),
+          fetchUserList(),
+        ]);
+
+        if (!isMounted) return;
+
+        setGame(gameData);
+        document.title = gameData.name || "Game Details";
+        setGameList(userList);
+      } catch (err) {
+        if (!isMounted) return;
+        setError(err.message || "Failed to load data");
         navigate("/games");
-      });
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [gameid, navigate]);
+
 
   const bannerUrl = useMemo(() => {
     if (!game?.screenshotUrls?.length) return null;
@@ -49,17 +66,19 @@ export default function GameDetails() {
     return Math.floor(val * 100) / 100;
   }
 
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
+  const handleAddModalOpen = () => {
+    setIsAddModalOpen(true);
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+  const handleAddModalClose = () => {
+    setIsAddModalOpen(false);
   };
 
+  if (!gameList) return <Loader />;
   if (loading) return <Loader />;
   if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
   if (!game) return null;
+  const isInList = gameList.some(item => item.gameId == game.id);
 
   return (
     <>
@@ -68,8 +87,8 @@ export default function GameDetails() {
           className="relative h-[38rem] w-full bg-center bg-cover"
           style={{ backgroundImage: `url(${bannerUrl})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#04040480] to-[#040404ff]" />
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#040404] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090B80] to-[#09090Bff]" />
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#09090B] to-transparent" />
         </div>
       )}
 
@@ -103,15 +122,27 @@ export default function GameDetails() {
 
             <p className="font-light mb-20 text-slate-400 whitespace-pre-line">{game.summary}</p>
 
-            <button
-              onClick={handleModalOpen}
-              style={{ position: 'absolute', bottom: 30, right: 30 }}
-              className="flex items-center text-white/80 border border-white/80 gap-2 hover:bg-white hover:text-zinc-900 px-5 py-2 rounded-xl transition-colors duration-200 shadow-lg"
+            {isInList ? (
+              <button
+                onClick={() => navigate("/list")}
+                style={{ position: 'absolute', bottom: 30, right: 30 }}
+                className="flex items-center text-white/80 border border-white/80 gap-2 hover:bg-white hover:text-zinc-900 px-5 py-2 rounded-xl transition-colors duration-200 shadow-lg"
 
-            >
-              <PlusIcon className="w-4 h-4" />
-              Add Game
-            </button>
+                >
+                <ArrowRightIcon className="w-4 h-4" />
+                View in List
+              </button>
+              ) : (
+              <button
+                onClick={handleAddModalOpen}
+                style={{ position: 'absolute', bottom: 30, right: 30 }}
+                className="flex items-center text-white/80 border border-white/80 gap-2 hover:bg-white hover:text-zinc-900 px-5 py-2 rounded-xl transition-colors duration-200 shadow-lg"
+
+               >
+                <PlusIcon className="w-4 h-4" />
+                Add Game
+              </button>
+            )}
           </div>
         </div>
 
@@ -125,8 +156,8 @@ export default function GameDetails() {
       </div>
 
       <AddGameModal 
-        isOpen={isModalOpen} 
-        onClose={handleModalClose} 
+        isOpen={isAddModalOpen} 
+        onClose={handleAddModalClose} 
         game={game} 
       />
     </>

@@ -15,11 +15,10 @@ function App() {
       <Toaster
         position="bottom-right"
         toastOptions={{
-          // Default options for all toasts
           duration: 4000,
           style: {
-            background: '#121212ff', // dark background
-            color: '#f9fafb',      // light text
+            background: '#121212ff',
+            color: '#f9fafb',
           },
         }}
       />

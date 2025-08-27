@@ -56,7 +56,7 @@ export default function NavBar() {
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded-full transition"
+              className="flex items-center gap-1 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white text-sm px-3 py-1 rounded-full transition"
               title="Logout"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
