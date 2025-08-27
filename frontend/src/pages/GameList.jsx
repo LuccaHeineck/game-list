@@ -49,13 +49,11 @@ export default function GameList() {
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const navigate = useNavigate();
 
-	// Statuses derived from STATUSES + "All" (no duplicates)
 	const statuses = useMemo(() => {
 		const statList = Object.entries(STATUSES).map(([id, config]) => ({
 			statusId: Number(id),
 			name: config.name,
 		}));
-		// Only prepend All if there is no existing status with id 0
 		return statList.some(s => s.statusId === 0)
 			? statList
 			: [{ statusId: 0, name: "All" }, ...statList];
@@ -104,6 +102,17 @@ export default function GameList() {
 			toast.error("Failed to delete game.");
 		}
 	};
+	
+	const handleGameUpdate = (updatedGame) => {
+		setGames((prevGames) =>
+			prevGames.map((entry) =>
+			entry.game.id === updatedGame.id
+				? { ...entry, game: { ...entry.game, ...updatedGame }, statusId: updatedGame.statusId, rating: updatedGame.rating }
+				: entry
+			)
+		);
+	};
+
 
 	function onSortClick(field) {
 		if (sortBy === field) {
@@ -222,6 +231,7 @@ export default function GameList() {
 						entry={modalGame}
 						onClose={() => setModalGame(null)}
 						onDelete={() => handleDeleteClick(modalGame?.game)}
+						onUpdate={handleGameUpdate}
 					/>
 					<ConfirmModal
 						isOpen={isConfirmOpen}

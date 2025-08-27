@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { loginUser } from "../api.js";
 import QuoteBanner from "../components/QuoteBanner.jsx";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     document.title = "Sign In";
@@ -16,7 +16,6 @@ export default function Login({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
       const data = await loginUser(username, password);
@@ -25,9 +24,14 @@ export default function Login({ onLogin }) {
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("username", username);
 
+      toast.success("Logged in successfully!", {
+        position: "bottom-center",
+      });
       onLogin();
     } catch (err) {
-      setError("Invalid credentials");
+      toast.error("Invalid credentials", {
+        position: "top-center",
+      });
     }
   };
 
@@ -82,7 +86,7 @@ export default function Login({ onLogin }) {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute inset-y-0 right-2 flex items-center text-white/70 hover:text-white"
-                tabIndex={-1} // avoid stealing focus from input
+                tabIndex={-1}
               >
                 {showPassword ? (
                   <EyeSlashIcon className="h-5 w-5" />
@@ -108,8 +112,6 @@ export default function Login({ onLogin }) {
               Create a free account
             </a>
           </p>
-
-          {error && <p className="text-red-500">{error}</p>}
         </form>
       </div>
     </div>

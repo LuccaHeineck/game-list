@@ -32,7 +32,7 @@ function interpolateColor(value) {
   return `rgb(${r},${g},${b})`;
 }
 
-export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
+export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDelete }) {
   const [formData, setFormData] = useState({ rating: 5, status: "" });
   const [statusOptions, setStatusOptions] = useState([]);
 
@@ -80,11 +80,17 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
         statusId: formData.status,
       });
       toast.success("Game updated successfully!");
+
+      if (onUpdate) {
+        onUpdate({ ...entry.game, rating: formData.rating, statusId: formData.status });
+      }
+
       onClose();
     } catch {
       toast.error("Failed to update game.");
     }
   };
+
 
   const sliderColor = interpolateColor(formData.rating);
 
@@ -187,14 +193,14 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
             <button
               type="button"
               onClick={() => onDelete(entry.game.id)}
-              className="px-5 py-2 rounded-lg border border-red-600 hover:bg-red-700 text-red-300 transition"
+              className="px-5 py-2 rounded-lg border border-red-600 hover:bg-red-700 hover:text-white text-red-300 transition"
             >
               Delete
             </button>
             <button
               type="submit"
               disabled={!formData.status}
-              className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition disabled:opacity-50"
+              className="px-5 py-2 rounded-lg bg-white hover:bg-white/70 text-zinc-900 font-medium transition disabled:opacity-50"
             >
               Save
             </button>
