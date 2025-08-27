@@ -147,11 +147,13 @@ export default function GameDetails() {
         </div>
 
         <div className="mt-8">
+          <h3 className="text-xl font-semibold mb-4">Screenshots</h3>
           <ScreenshotCarousel screenshots={game.screenshotUrls} />
         </div>
 
         <div className="mt-8">
-          <ArtworkCarousel screenshots={game.artworkUrls} />
+          <h3 className="text-xl font-semibold mb-4">Artworks</h3>
+          <ScreenshotCarousel screenshots={game.artworkUrls} />
         </div>
       </div>
 

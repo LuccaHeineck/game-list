@@ -10,6 +10,7 @@ export default function Home() {
 	useEffect(() => {
 		document.title = "Home";
 		document.body.style.overflow = isSearchOpen ? "hidden" : "auto";
+		window.scrollTo(0, 0);
 	}, [isSearchOpen]);
 
 

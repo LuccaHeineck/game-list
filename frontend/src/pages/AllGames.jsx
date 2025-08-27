@@ -145,7 +145,7 @@ export default function AllGames() {
 											alt={game.name}
 											className="w-full object-cover select-none"
 										/>
-										<div className="p-3 flex flex-col justify-between h-28">
+										<div className="p-3 flex flex-col justify-between h-28 select-none">
 											<div>
 												<h3 className="text-sm text-white font-semibold line-clamp-2">
 													{game.name}

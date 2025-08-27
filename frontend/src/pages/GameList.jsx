@@ -6,7 +6,8 @@ import {
 	ArrowUpIcon,
 	ArrowDownIcon,
 	Bars3Icon,
-	StarIcon
+	StarIcon,
+	MagnifyingGlassIcon
 } from "@heroicons/react/24/outline";
 import Loader from "../components/Loader";
 import GameRow from "../components/GameRow";
@@ -77,6 +78,7 @@ export default function GameList() {
 		};
 
 		loadData();
+		window.scrollTo(0, 0);
 	}, []);
 
 	const handleDeleteClick = (game) => {
@@ -157,9 +159,9 @@ export default function GameList() {
 	if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
 
 	return (
-		<div className="max-w-6xl min-h-screen mx-auto px-4 py-6 mt-20 flex gap-6">
-			{/* Status Filter */}
-			<div className="w-48 flex-shrink-0">
+		<div className="max-w-6xl mx-auto px-4 py-6 mt-20 flex gap-6 min-h-screen">
+        {/* Status Filter */}
+        	<div className="w-48 flex-shrink-0 sticky top-16 self-start">
 				<div className="flex flex-col gap-2">
 					{statuses.map((status) => {
 					const isSelected = selectedStatus === status.statusId;
@@ -192,13 +194,17 @@ export default function GameList() {
 			<div className="flex-1">
 				{/* Search & Sort */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-					<input
-						type="text"
-						placeholder="Search games by name..."
-						className="w-full p-3 pr-10 pl-4 bg-zinc-800 rounded-full text-white placeholder-gray-400 focus:outline-none"
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
-					/>
+					<div className="relative flex-1">
+						<input
+							type="text"
+							placeholder="Search games by name..."
+							className="w-full p-3 pr-10 pl-4 bg-zinc-800 rounded-full text-white placeholder-gray-400 focus:outline-none"
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+						/>
+						<MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+					</div>
+					
 					<div className="flex gap-6 text-gray-400">
 						{["completionDate", "name", "rating"].map((field) => (
 							<div
@@ -238,8 +244,8 @@ export default function GameList() {
 					/>
 					<ConfirmModal
 						isOpen={isConfirmOpen}
-						title="Delete Game"
-						message={`Are you sure you want to delete "${confirmDeleteGame?.name}"?`}
+						title="Remove Game"
+						message={`Are you sure you want to remove "${confirmDeleteGame?.name}"?`}
 						onConfirm={confirmDelete}
 						onCancel={() => setIsConfirmOpen(false)}
 					/>
