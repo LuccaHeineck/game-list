@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
-import { fetchUserList, fetchStatusList, deleteGameFromList } from "../api";
+import { fetchUserList, deleteGameFromList } from "../api";
+import { STATUSES } from "../config/statuses";
 import {
 	CalendarIcon,
 	ArrowUpIcon,
@@ -36,8 +37,7 @@ function SortIcon({ field, currentSort, currentOrder }) {
 
 export default function GameList() {
 	const [games, setGames] = useState([]);
-	const [statuses, setStatuses] = useState([]);
-	const [selectedStatus, setSelectedStatus] = useState("all");
+	const [selectedStatus, setSelectedStatus] = useState(0); // 0 = All
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
@@ -49,21 +49,36 @@ export default function GameList() {
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const navigate = useNavigate();
 
+	// Statuses derived from STATUSES + "All" (no duplicates)
+	const statuses = useMemo(() => {
+		const statList = Object.entries(STATUSES).map(([id, config]) => ({
+			statusId: Number(id),
+			name: config.name,
+		}));
+		// Only prepend All if there is no existing status with id 0
+		return statList.some(s => s.statusId === 0)
+			? statList
+			: [{ statusId: 0, name: "All" }, ...statList];
+	}, []);
+
+
 	useEffect(() => {
+		document.title = "My List";
 		setLoading(true);
 		setError(null);
 
-		Promise.all([fetchUserList(), fetchStatusList()])
-			.then(([gamesData, statusesData]) => {
+		const loadData = async () => {
+			try {
+				const gamesData = await fetchUserList();
 				setGames(gamesData);
-				// Add "All" as first option
-				setStatuses([{ statusId: "all", name: "All" }, ...statusesData]);
-				setLoading(false);
-			})
-			.catch((err) => {
+			} catch (err) {
 				setError(err.message || "Failed to load data");
+			} finally {
 				setLoading(false);
-			});
+			}
+		};
+
+		loadData();
 	}, []);
 
 	const handleDeleteClick = (game) => {
@@ -90,8 +105,6 @@ export default function GameList() {
 		}
 	};
 
-
-
 	function onSortClick(field) {
 		if (sortBy === field) {
 			setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -106,7 +119,7 @@ export default function GameList() {
 			g.game.name.toLowerCase().includes(searchTerm.toLowerCase())
 		);
 
-		if (selectedStatus !== "all") {
+		if (selectedStatus !== 0) {
 			filtered = filtered.filter((g) => g.statusId === selectedStatus);
 		}
 
@@ -114,11 +127,7 @@ export default function GameList() {
 			completionDate: (a, b) =>
 				new Date(a.completionDate || 0) - new Date(b.completionDate || 0),
 			name: (a, b) => a.game.name.localeCompare(b.game.name),
-			rating: (a, b) => {
-				const ra = a.rating ?? -1;
-				const rb = b.rating ?? -1;
-				return ra - rb;
-			}
+			rating: (a, b) => (a.rating ?? -1) - (b.rating ?? -1),
 		};
 
 		filtered.sort(compareFuncs[sortBy]);
@@ -126,31 +135,46 @@ export default function GameList() {
 
 		return filtered;
 	}, [games, searchTerm, selectedStatus, sortBy, sortOrder]);
-	
+
+	const statusCounts = useMemo(() => {
+		const counts = {};
+		statuses.forEach((s) => { counts[s.statusId] = 0; });
+		games.forEach((g) => { counts[g.statusId] = (counts[g.statusId] ?? 0) + 1; });
+		counts[0] = games.length; // All
+		return counts;
+	}, [games, statuses]);
 
 	if (loading) return <Loader />;
 	if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
 
 	return (
-		<div className="max-w-6xl mx-auto px-4 py-6 mt-20 flex gap-6">
+		<div className="max-w-6xl min-h-screen mx-auto px-4 py-6 mt-20 flex gap-6">
 			{/* Status Filter */}
 			<div className="w-48 flex-shrink-0">
 				<div className="flex flex-col gap-2">
-					{statuses.map((status) => (
+					{statuses.map((status) => {
+					const isSelected = selectedStatus === status.statusId;
+					const statusConfig = STATUSES[status.statusId];
+					const IconComponent = statusConfig?.icon;
+
+					return (
 						<button
-							key={status.statusId}
-							className={`px-4 py-2 rounded text-left transition-colors ${
-								selectedStatus === status.statusId
-									? "bg-blue-600 text-white"
-									: "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
-							}`}
-							onClick={() => setSelectedStatus(status.statusId)}
+						key={status.statusId}
+						className={`flex items-center gap-2 px-4 py-2 rounded-full text-left transition-colors ${
+							isSelected
+							? `${statusConfig?.color} text-zinc-900`
+							: "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+						}`}
+						onClick={() => setSelectedStatus(status.statusId)}
 						>
-							{status.name}
+						{IconComponent && <IconComponent className="w-5 h-5" />}
+						<span>{status.name}</span> {statusCounts[status.statusId] ?? 0}
 						</button>
-					))}
+					);
+					})}
 				</div>
 			</div>
+
 
 			{/* Main Content */}
 			<div className="flex-1">
@@ -163,21 +187,14 @@ export default function GameList() {
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
 					/>
-
 					<div className="flex gap-6 text-gray-400">
 						{["completionDate", "name", "rating"].map((field) => (
 							<div
 								key={field}
 								onClick={() => onSortClick(field)}
-								className={`hover:text-gray-300 ${
-									sortBy === field ? "text-gray-100" : ""
-								}`}
+								className={`hover:text-gray-300 ${sortBy === field ? "text-gray-100" : ""}`}
 							>
-								<SortIcon
-									field={field}
-									currentSort={sortBy}
-									currentOrder={sortOrder}
-								/>
+								<SortIcon field={field} currentSort={sortBy} currentOrder={sortOrder} />
 							</div>
 						))}
 					</div>
@@ -195,10 +212,7 @@ export default function GameList() {
 								key={entry.game.id}
 								entry={entry}
 								onClick={() => navigate(`/gamedetails/${entry.game.id}`)}
-								onEdit={() => {
-									setModalGame(entry);
-									setIsModalOpen(true);
-								}}
+								onEdit={() => { setModalGame(entry); setIsModalOpen(true); }}
 							/>
 						))
 					)}

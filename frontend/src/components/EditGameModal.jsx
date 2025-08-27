@@ -1,14 +1,8 @@
+// EditGameModal.jsx
 import { useState, useEffect } from "react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import { updateGameInList, fetchStatusList } from "../api";
-import {
-  CheckCircleIcon,
-  ClockIcon,
-  NoSymbolIcon,
-  SparklesIcon,
-  HandRaisedIcon,
-} from "@heroicons/react/24/outline";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { STATUSES } from "../config/statuses";
 
 const ratingColors = [
   "#ef4444", "#f59e0b", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6",
@@ -42,7 +36,6 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
   const [formData, setFormData] = useState({ rating: 5, status: "" });
   const [statusOptions, setStatusOptions] = useState([]);
 
-  // Move hooks above any conditional return
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
@@ -52,39 +45,40 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
   useEffect(() => {
     if (isOpen) {
       fetchStatusList().then((data) =>
-        setStatusOptions(data.map((status) => ({ value: status.statusId, label: status.name })))
+        setStatusOptions(
+          data.map((status) => ({
+            value: status.statusId,
+            label: status.name,
+          }))
+        )
       );
       if (entry) {
-        setFormData({ rating: entry.rating ?? 5, status: entry.statusId ?? "" });
+        setFormData({
+          rating: entry.rating ?? 5,
+          status: entry.statusId ?? "",
+        });
       }
     }
   }, [isOpen, entry]);
 
-
   if (!isOpen || !entry) return null;
-
-  const statusIcons = {
-    1: ClockIcon, 2: CheckCircleIcon, 3: NoSymbolIcon,
-    4: SparklesIcon, 5: HandRaisedIcon,
-  };
-
-  const selectedColors = {
-    1: "bg-yellow-500 shadow-yellow-400",
-    2: "bg-green-600 shadow-green-500",
-    3: "bg-red-600 shadow-red-500",
-    4: "bg-purple-600 shadow-purple-500",
-    5: "bg-orange-500 shadow-orange-400",
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: name === "rating" ? Number(value) : value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "rating" ? Number(value) : value,
+    }));
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await updateGameInList({ ...entry.game, rating: formData.rating, statusId: formData.status });
+      await updateGameInList({
+        ...entry.game,
+        rating: formData.rating,
+        statusId: formData.status,
+      });
       toast.success("Game updated successfully!");
       onClose();
     } catch {
@@ -92,7 +86,6 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
     }
   };
 
-  if (!isOpen) return null;
   const sliderColor = interpolateColor(formData.rating);
 
   return (
@@ -111,7 +104,9 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
             />
           )}
           <div className="flex flex-col justify-center">
-            <h2 className="text-5xl font-extrabold leading-tight">{entry.game.name}</h2>
+            <h2 className="text-5xl font-extrabold leading-tight">
+              {entry.game.name}
+            </h2>
             <div
               className="mt-3 inline-flex items-center justify-center font-extrabold px-6 py-3 rounded-full text-4xl select-none drop-shadow-lg max-w-max"
               style={{ color: sliderColor, border: `3px solid ${sliderColor}` }}
@@ -122,7 +117,11 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleUpdate} className="mt-8 flex flex-col gap-8 flex-grow overflow-auto">
+        <form
+          onSubmit={handleUpdate}
+          className="mt-8 flex flex-col gap-8 flex-grow overflow-auto"
+        >
+          {/* Rating */}
           <div className="relative mt-6 mb-6">
             <input
               type="range"
@@ -135,36 +134,48 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
               onChange={handleInputChange}
               className="w-full h-3 rounded-full cursor-pointer appearance-none"
               style={{
-                background: `linear-gradient(to right, ${sliderColor} 0%, ${sliderColor} ${(formData.rating / 10) * 100}%, #444 ${(formData.rating / 10) * 100}%, #444 100%)`,
+                background: `linear-gradient(to right, ${sliderColor} 0%, ${sliderColor} ${
+                  (formData.rating / 10) * 100
+                }%, #444 ${(formData.rating / 10) * 100}%, #444 100%)`,
               }}
             />
             <div className="absolute top-6 left-0 w-full flex justify-between text-xs text-gray-400 px-1 select-none">
-              <span>0</span><span>10</span>
+              <span>0</span>
+              <span>10</span>
             </div>
           </div>
 
+          {/* Status buttons */}
           <div className="flex gap-3 mb-10">
             {statusOptions.map((option) => {
               const isSelected = formData.status === option.value;
-              const IconComponent = statusIcons[option.value];
-              const selectedColor = selectedColors[option.value] || "bg-blue-600 shadow-blue-500";
+              const config = STATUSES[option.value];
+              if (!config) return null;
+              const Icon = config.icon;
+
               return (
                 <button
                   key={option.value}
                   type="button"
-                  onClick={() => setFormData((prev) => ({ ...prev, status: option.value }))}
-                  className={`flex items-center justify-center gap-2 py-2 rounded-full text-white font-medium shadow-md transition flex-grow ${isSelected ? selectedColor : "bg-zinc-700 hover:bg-zinc-600"}`}
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, status: option.value }))
+                  }
+                  className={`flex items-center justify-center gap-2 py-2 rounded-full font-medium shadow-md transition flex-grow ${
+                    isSelected
+                      ? `${config.color} text-zinc-900`
+                      : "bg-zinc-700 hover:bg-zinc-600"
+                  }`}
                   aria-pressed={isSelected}
                   style={{ minWidth: "0" }}
                 >
-                  {IconComponent && <IconComponent className="w-5 h-5" />}
-                  <span className="text-sm select-none">{option.label}</span>
+                  {Icon && <Icon className="w-5 h-5" />}
+                  <span className="text-sm select-none">{config.name}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Buttons */}
+          {/* Action buttons */}
           <div className="flex justify-end space-x-4 pt-4">
             <button
               type="button"
@@ -183,7 +194,7 @@ export default function EditGameModal({ isOpen, onClose, entry, onDelete }) {
             <button
               type="submit"
               disabled={!formData.status}
-              className={`px-5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition disabled:opacity-50`}
+              className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition disabled:opacity-50"
             >
               Save
             </button>

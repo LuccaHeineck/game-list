@@ -43,50 +43,55 @@ export default function Register({ onRegister }) {
       
       <div className="max-w-md mx-auto -mt-[40rem] p-6 bg-white/10 dark:bg-zinc-900/30 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl shadow-lg">
         <h2 className="text-xl font-bold mb-4">Register</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <label
-            htmlFor="username"
-            className="mb-2 text-sm font-medium text-white"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <label
-            htmlFor="username"
-            className="mb-2 text-sm font-medium text-white"
-          >
-            Username
-          </label>
-          <input
-            id="username"
-            className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white"
-            type="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <label
-            htmlFor="username"
-            className="mb-2 text-sm font-medium text-white"
-          >
-            Password
-          </label>
-          <div className="relative">
-              <input
-                id="password"
-                className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white w-full pr-10"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col">
+            <label
+              htmlFor="username"
+              className="mb-2 text-sm font-medium text-white"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label
+              htmlFor="username"
+              className="mb-2 text-sm font-medium text-white"
+            >
+              Username
+            </label>
+            <input
+              id="username"
+              className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white"
+              type="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label
+              htmlFor="username"
+              className="mb-2 text-sm font-medium text-white"
+            >
+              Password
+            </label>
+            <div className="relative">
+                <input
+                  id="password"
+                  className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white w-full pr-10"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
@@ -100,6 +105,7 @@ export default function Register({ onRegister }) {
                 )}
               </button>
             </div>
+          </div>
           <button
             className="bg-white mt-6 text-black text-sm p-2 rounded-md hover:bg-white/90 transition"
             type="submit"

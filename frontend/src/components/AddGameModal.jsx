@@ -1,36 +1,18 @@
+// AddGameModal.jsx
 import { useState, useEffect } from "react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import { addGameToList, fetchStatusList } from "../api";
-import {
-  CheckCircleIcon,
-  ClockIcon,
-  NoSymbolIcon,
-  SparklesIcon,
-  HandRaisedIcon,
-} from "@heroicons/react/24/outline";
-import toast, { Toaster } from "react-hot-toast";
-
+import toast from "react-hot-toast";
+import { STATUSES } from "../config/statuses";
 
 const ratingColors = [
-  "#ef4444", // red-ish at 0
-  "#f59e0b", // orange-ish at 2
-  "#eab308", // yellow-ish at 4
-  "#22c55e", // green-ish at 6
-  "#3b82f6", // blue-ish at 8
-  "#8b5cf6", // purple-ish at 10
+  "#ef4444", "#f59e0b", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6",
 ];
 
 function hexToRgb(hex) {
   hex = hex.replace(/^#/, "");
-  if (hex.length === 3) {
-    hex = hex.split("").map((c) => c + c).join("");
-  }
+  if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
   const num = parseInt(hex, 16);
-  return {
-    r: (num >> 16) & 255,
-    g: (num >> 8) & 255,
-    b: num & 255,
-  };
+  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
 }
 
 function interpolateColor(value) {
@@ -51,59 +33,30 @@ function interpolateColor(value) {
 }
 
 export default function AddGameModal({ isOpen, onClose, game }) {
-  const [formData, setFormData] = useState({
-    rating: 5,
-    status: "",
-  });
+  const [formData, setFormData] = useState({ rating: 5, status: "" });
   const [statusOptions, setStatusOptions] = useState([]);
 
-  const statusIcons = {
-    1: ClockIcon, // Pending
-    2: CheckCircleIcon, // Completed
-    3: NoSymbolIcon, // Cancelled
-    4: SparklesIcon, // Wish
-    5: HandRaisedIcon, // On hold
-  };
-
-  const selectedColors = {
-    1: "bg-yellow-500 shadow-yellow-400",
-    2: "bg-green-600 shadow-green-500",
-    3: "bg-red-600 shadow-red-500",
-    4: "bg-purple-600 shadow-purple-500",
-    5: "bg-orange-500 shadow-orange-400",
-  };
-
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
-      fetchStatusList().then((data) => {
+      fetchStatusList().then((data) =>
         setStatusOptions(
           data.map((status) => ({
             value: status.statusId,
             label: status.name,
           }))
-        );
-      });
+        )
+      );
     }
   }, [isOpen]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "rating" ? Number(value) : value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: name === "rating" ? Number(value) : value }));
   };
 
   const handleSubmit = async (e) => {
@@ -119,24 +72,16 @@ export default function AddGameModal({ isOpen, onClose, game }) {
       createdAt: "",
     };
 
-    // Close the modal immediately
     onClose();
 
-    // Show toast promise
-    toast.promise(
-      addGameToList(userGameData),
-      {
-        loading: "Adding game...",
-        success: <b>Game added successfully!</b>,
-        error: <b>Failed to add game. Please try again.</b>,
-      }
-    );
+    toast.promise(addGameToList(userGameData), {
+      loading: "Adding game...",
+      success: <b>Game added successfully!</b>,
+      error: <b>Failed to add game. Please try again.</b>,
+    });
 
-    // Reset form after the promise resolves
     setFormData({ rating: 5, status: "" });
   };
-
-
 
   const handleClose = () => {
     setFormData({ rating: 5, status: "" });
@@ -153,34 +98,28 @@ export default function AddGameModal({ isOpen, onClose, game }) {
         onClick={(e) => e.stopPropagation()}
         className="bg-zinc-900 text-white max-w-3xl w-full max-h-[95vh] rounded-xl shadow-xl flex flex-col overflow-hidden border border-white/10 p-8"
       >
-		{/* Header: Cover and Title + Rating */}
-		<div className="flex items-center gap-6 border-b border-white/20 pb-6">
-			{/* Cover */}
-			{game.coverUrl && (
-				<img
-				src={game.coverUrl.replace("t_thumb", "t_cover_big")}
-				alt={`${game.name} cover`}
-				className="w-40 h-56 object-cover rounded-xl shadow-lg flex-shrink-0"
-				/>
-			)}
+        {/* Header */}
+        <div className="flex items-center gap-6 border-b border-white/20 pb-6">
+          {game.coverUrl && (
+            <img
+              src={game.coverUrl.replace("t_thumb", "t_cover_big")}
+              alt={`${game.name} cover`}
+              className="w-40 h-56 object-cover rounded-xl shadow-lg flex-shrink-0"
+            />
+          )}
+          <div className="flex flex-col justify-center">
+            <h2 className="text-5xl font-extrabold leading-tight">{game.name}</h2>
+            <div
+              className="mt-3 inline-flex items-center justify-center font-extrabold px-6 py-3 rounded-full text-4xl select-none drop-shadow-lg max-w-max"
+              style={{ color: sliderColor, border: `3px solid ${sliderColor}` }}
+            >
+              {formData.rating.toFixed(1)}
+            </div>
+          </div>
+        </div>
 
-			{/* Title + current rating */}
-			<div className="flex flex-col justify-center">
-				<h2 className="text-5xl font-extrabold leading-tight">{game.name}</h2>
-				<div
-				className="mt-3 inline-flex items-center justify-center font-extrabold px-6 py-3 rounded-full text-4xl select-none drop-shadow-lg max-w-max"
-				style={{ color: interpolateColor(formData.rating), border: `3px solid ${interpolateColor(formData.rating)}` }}
-				>
-				{formData.rating.toFixed(1)}
-				</div>
-			</div>
-		</div>
-
-        {/* Content below header: rating slider and status buttons */}
-        <form
-          onSubmit={handleSubmit}
-          className="mt-8 flex flex-col gap-8 flex-grow overflow-auto"
-        >
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-8 flex-grow overflow-auto">
           {/* Rating Slider */}
           <div className="relative mt-6 mb-6">
             <input
@@ -208,30 +147,25 @@ export default function AddGameModal({ isOpen, onClose, game }) {
           <div className="flex gap-3 mb-10">
             {statusOptions.map((option) => {
               const isSelected = formData.status === option.value;
-              const IconComponent = statusIcons[option.value];
-              const selectedColor =
-                selectedColors[option.value] || "bg-blue-600 shadow-blue-500";
+              const config = STATUSES[option.value];
+              if (!config) return null;
+              const Icon = config.icon;
 
               return (
                 <button
                   key={option.value}
                   type="button"
-                  onClick={() =>
-                    setFormData((prev) => ({ ...prev, status: option.value }))
-                  }
-                  className={`flex items-center justify-center gap-2 py-2 rounded-full text-white font-medium shadow-md transition
-						flex-grow
-						${
-              isSelected
-                ? `${selectedColor}`
-                : "bg-zinc-700 hover:bg-zinc-600"
-            }
-						`}
+                  onClick={() => setFormData((prev) => ({ ...prev, status: option.value }))}
+                  className={`flex items-center justify-center gap-2 py-2 rounded-full font-medium shadow-md transition flex-grow ${
+                    isSelected
+                      ? config.color.replace("text-", "bg-")
+                      : "bg-zinc-700 hover:bg-zinc-600"
+                  }`}
                   aria-pressed={isSelected}
                   style={{ minWidth: "0" }}
                 >
-                  {IconComponent && <IconComponent className="w-5 h-5" />}
-                  <span className="text-sm select-none">{option.label}</span>
+                  {Icon && <Icon className="w-5 h-5" />}
+                  <span className="text-sm select-none">{config.name}</span>
                 </button>
               );
             })}
@@ -249,13 +183,11 @@ export default function AddGameModal({ isOpen, onClose, game }) {
             <button
               type="submit"
               disabled={!formData.status}
-              className={`px-5 py-2 rounded-lg text-black font-semibold transition shadow-lg
-					${
-            formData.status
-              ? "bg-white/90 hover:bg-white"
-              : "bg-white/50 cursor-not-allowed"
-          }
-					`}
+              className={`px-5 py-2 rounded-lg text-black font-semibold transition shadow-lg ${
+                formData.status
+                  ? "bg-white/90 hover:bg-white"
+                  : "bg-white/50 cursor-not-allowed"
+              }`}
             >
               Add Game
             </button>

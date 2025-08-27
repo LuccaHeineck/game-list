@@ -37,7 +37,7 @@ export default function QuoteBanner({ quoteData }) {
         opacity: fade ? 1 : 0,
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040404cc] to-[#040404]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090Bcc] to-[#09090B]" />
       <div className={`relative max-w-3xl text-white drop-shadow-lg text-left 
         ${quoteData ? "pt-0" : "pt-24"
       }`}>
@@ -45,7 +45,7 @@ export default function QuoteBanner({ quoteData }) {
         <p className="text-xl md:text-2xl font-medium mb-1">— {who}</p>
         <p className="text-sm md:text-base text-gray-300">from {game}</p>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#040404] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#09090B] to-transparent" />
     </div>
   );
 }
