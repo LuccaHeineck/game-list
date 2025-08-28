@@ -66,11 +66,19 @@ export default function GameRow({ entry, onClick, onEdit }) {
 
         {/* Info do jogo */}
         <div className="flex flex-col flex-grow min-w-0">
-          <h3 className="text-white font-semibold truncate">{game.name}</h3>
-          <p className="text-zinc-400 text-sm truncate">
-            {game.genreNames.join(", ")}
+          {/* Nome do jogo quebra linha */}
+          <h3 className="text-white font-semibold break-words">
+            {game.name}
+          </h3>
+
+          {/* Gêneros truncados após X caracteres */}
+          <p className="text-zinc-400 text-sm">
+            {game.genreNames.join(", ").length > 70
+              ? game.genreNames.join(", ").slice(0, 70) + "..."
+              : game.genreNames.join(", ")}
           </p>
         </div>
+
 
         {/* Completion date */}
         <div className="text-zinc-400 text-sm text-right min-w-[120px]">

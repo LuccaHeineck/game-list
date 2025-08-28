@@ -113,17 +113,28 @@ export default function GameDetails() {
               <h1 className="text-3xl font-bold">{game.name}</h1>
             </div>
 
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-gray-600 dark:text-gray-400 mb-0">
-                {game.genreNames.join(", ")}
-              </p>
-              <div className="flex items-center gap-1 text-yellow-500">
-                <StarIcon className="w-6 h-6" />
-                <span className="text-lg font-semibold">
-                  {truncateRating(game.rating).toFixed(1)}
+            <div className="flex justify-between items-start mb-4">
+            {/* Gêneros como badges */}
+            <div className="flex flex-wrap gap-1 max-w-[70%]">
+              {game.genreNames.map((genre, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-0.5 bg-zinc-800 text-zinc-300 text-xs rounded-full"
+                >
+                  {genre}
                 </span>
-              </div>
+              ))}
             </div>
+
+            {/* Rating */}
+            <div className="flex items-center gap-1 text-yellow-500">
+              <StarIcon className="w-6 h-6" />
+              <span className="text-lg font-semibold">
+                {truncateRating(game.rating).toFixed(1)}
+              </span>
+            </div>
+          </div>
+
 
             <p className="font-light mb-20 text-slate-400 whitespace-pre-line">{game.summary}</p>
 
