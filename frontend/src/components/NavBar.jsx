@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UserIcon } from "@heroicons/react/24/solid";
-import { HomeIcon, Squares2X2Icon, RectangleStackIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { HomeIcon, Squares2X2Icon, RectangleStackIcon, MagnifyingGlassIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import SearchModal from "./SearchModal";
 
 export default function NavBar() {
@@ -29,20 +29,23 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-zinc-800/30 backdrop-blur-md border border-white/10 px-8 py-3 rounded-full shadow-lg z-40 w-[90%] max-w-xs pl-12 pr-12">
+      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-zinc-800/30 backdrop-blur-md border border-white/10 py-3 rounded-full shadow-lg z-40 w-[90%] max-w-sm pl-12 pr-12">
         <div className="flex justify-between text-lg text-white">
-          <Link to="/" className={`flex items-center text-xl ${isActive("/") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
+          <Link to="/" title="Home" className={`flex items-center text-xl ${isActive("/") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
             <HomeIcon className="w-6 h-6" />
           </Link>
-          <Link to="/games" className={`flex items-center text-xl ${isActive("/games") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
+          <Link to="/games" title="Discover" className={`flex items-center text-xl ${isActive("/games") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
             <Squares2X2Icon className="w-6 h-6" />
           </Link>
-          <Link to="/list" className={`flex items-center text-xl ${isActive("/list") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
-            <RectangleStackIcon className="w-6 h-6" />
-          </Link>
-          <button onClick={() => setShowSearch(true)} className={`flex items-center text-xl ${isActive("/search") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
+          <button onClick={() => setShowSearch(true)} title="Search for a game" className={`flex items-center text-xl ${isActive("/search") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
             <MagnifyingGlassIcon className="w-6 h-6" />
           </button>
+          <Link to="/list" title="My List" className={`flex items-center text-xl ${isActive("/list") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
+            <RectangleStackIcon className="w-6 h-6" />
+          </Link>
+          <Link to="/about" title="About" className={`flex items-center text-xl ${isActive("/about") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
+            <InformationCircleIcon className="w-6 h-6" />
+          </Link>
         </div>
       </nav>
 

@@ -8,6 +8,7 @@ import GameDetails from "./pages/GameDetails";
 import GameList from "./pages/GameList";
 import ProtectedRoute from "./components/ProtectedRoute"; // step 2
 import { Toaster } from "react-hot-toast";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Layout />}>
+            <Route path="/about" element={<About />} />
             <Route path="/games" element={<AllGames />} />
             <Route path="/gamedetails/:gameid" element={<GameDetails />} />
             <Route path="/list" element={<GameList />} />

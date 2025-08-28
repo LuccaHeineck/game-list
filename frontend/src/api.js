@@ -77,6 +77,8 @@ export async function fetchGameInfoById(id) {
   if (!response.ok) {
     throw new Error("Unauthorized");
   }
+  console.log(response);
+
   return await response.json();
 }
 

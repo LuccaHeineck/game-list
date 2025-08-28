@@ -3,6 +3,7 @@ package com.example.backend.mapper;
 import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.request.GameRequestDTO;
 import com.example.backend.dto.response.GameResponseDTO;
+import com.example.backend.dto.response.VideoResponseDTO;
 import com.example.backend.model.Artwork;
 import com.example.backend.model.Game;
 import com.example.backend.model.Genre;
@@ -10,6 +11,7 @@ import com.example.backend.model.Screenshot;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class GameMapper {
@@ -62,11 +64,13 @@ public class GameMapper {
         game.setIgdbId(dto.getId());
         game.setName(dto.getName());
         game.setSummary(dto.getSummary());
-        game.setReleaseDate(
-                Instant.ofEpochSecond(dto.getReleaseDate())
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-        );
+        if (dto.getReleaseDate() != null) {
+            game.setReleaseDate(
+                    Instant.ofEpochSecond(dto.getReleaseDate())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+            );
+        }
         game.setCoverUrl(dto.getCover().getUrl());
         game.setRating(dto.getRating());
         game.setCreatedAt(java.time.LocalDateTime.now());
@@ -99,6 +103,10 @@ public class GameMapper {
         }
         if (game.getCover() != null) dto.setCoverUrl(game.getCover().getUrl());
         dto.setRating(game.getRating());
+        dto.setVideoUrls(
+                game.getVideos() == null ? Collections.emptyList() :
+                        game.getVideos().stream().map(VideoResponseDTO::getVideoId).toList()
+        );
         return dto;
     }
 

@@ -3,8 +3,9 @@ import Loader from "../components/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import ScreenshotCarousel from "../components/ScreenshotCarousel";
 import { StarIcon, PlusIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
-import ArtworkCarousel from "../components/ArtworkCarousel";
+import { CameraIcon, PaintBrushIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import AddGameModal from "../components/AddGameModal";
+import VideoCarousel from "../components/VideoCarousel";
 import { fetchGameInfoById, fetchUserList } from "../api";
 
 export default function GameDetails() {
@@ -32,6 +33,8 @@ export default function GameDetails() {
         if (!isMounted) return;
 
         setGame(gameData);
+        console.log(gameData);
+        
         document.title = gameData.name || "Game Details";
         setGameList(userList);
       } catch (err) {
@@ -147,12 +150,26 @@ export default function GameDetails() {
         </div>
 
         <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Screenshots</h3>
+          <div className="flex items-center mb-4">
+            <CameraIcon className="w-6 h-6 mr-2 text-gray-400" />
+            <h3 className="text-xl font-semibold">Screenshots</h3>
+          </div>
           <ScreenshotCarousel screenshots={game.screenshotUrls} />
         </div>
 
         <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Artworks</h3>
+          <div className="flex items-center mb-4">
+            <VideoCameraIcon className="w-6 h-6 mr-2 text-gray-400" />
+            <h3 className="text-xl font-semibold">Videos</h3>
+          </div>
+          <VideoCarousel videoUrls={game.videoUrls} />
+        </div>
+
+        <div className="mt-8">
+          <div className="flex items-center mb-4">
+            <PaintBrushIcon className="w-6 h-6 mr-2 text-gray-400" />
+            <h3 className="text-xl font-semibold">Artworks</h3>
+          </div>
           <ScreenshotCarousel screenshots={game.artworkUrls} />
         </div>
       </div>

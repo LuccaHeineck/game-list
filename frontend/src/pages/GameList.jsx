@@ -238,7 +238,10 @@ export default function GameList() {
 					<EditGameModal
 						isOpen={isModalOpen}
 						entry={modalGame}
-						onClose={() => setModalGame(null)}
+						onClose={() => {
+							setModalGame(null)
+							setIsModalOpen(false);
+						}}
 						onDelete={() => handleDeleteClick(modalGame?.game)}
 						onUpdate={handleGameUpdate}
 					/>

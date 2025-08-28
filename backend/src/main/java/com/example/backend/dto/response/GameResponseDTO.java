@@ -15,6 +15,7 @@ public class GameResponseDTO {
 
     private List<String> genreNames; // List of genre names for the game
     private List<String> artworkUrls; // List of artwork URLs for the game
+    private List<String> videoUrls; // List of videos URLs for the game
     private List<String> screenshotUrls; // List of screenshot URLs for the game
 
     // Getters and setters
@@ -97,5 +98,13 @@ public class GameResponseDTO {
 
     public void setScreenshotUrls(List<String> screenshotUrls) {
         this.screenshotUrls = screenshotUrls;
+    }
+
+    public List<String> getVideoUrls() {
+        return videoUrls;
+    }
+
+    public void setVideoUrls(List<String> videoUrls) {
+        this.videoUrls = videoUrls;
     }
 }

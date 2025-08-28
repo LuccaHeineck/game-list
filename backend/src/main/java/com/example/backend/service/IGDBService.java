@@ -150,7 +150,7 @@ public class IGDBService {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
-        String body = "where id = " + id + "; fields id,name,rating,summary,cover.url,first_release_date,artworks;";
+        String body = "where id = " + id + "; fields id,name,rating,summary,cover.url,first_release_date,artworks,videos.video_id;";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
@@ -179,7 +179,7 @@ public class IGDBService {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
-        String body = "where id = " + id + "; fields id,name,rating,summary,genres.name,cover.url,first_release_date,artworks;";
+        String body = "where id = " + id + "; fields id,name,rating,summary,genres.name,cover.url,first_release_date,artworks,videos.video_id;";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 

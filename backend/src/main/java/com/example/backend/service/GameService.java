@@ -151,17 +151,18 @@ public class GameService {
 
     public GameResponseDTO getFullGameInfoById(Long id) {
         IGDBGameDTO igdbDto = igdbService.findIGDBGameById(id);
-        GameRequestDTO dto = GameMapper.fromIGDBToRequestDTO(igdbDto);
-        Optional<Game> existingGame = gameRepository.findByIgdbId(dto.getId());
 
-        if (existingGame.isPresent()) {
-            return GameMapper.toDto(existingGame.get());
-        }
+        // find existing game
+//        Optional<Game> existingGame = gameRepository.findByIgdbId(igdbDto.getId());
+//
+//        if (existingGame.isPresent()) {
+//            return GameMapper.toDto(existingGame.get());
+//        }
 
         GameResponseDTO game = GameMapper.fromIGDBToResponseDTO(igdbDto);
 
 
-        List<Integer> genreIds = dto.getGenres()
+        List<Integer> genreIds = igdbDto.getGenres()
                 .stream()
                 .map(GenreResponseDTO::getId)
                 .toList();
@@ -169,11 +170,11 @@ public class GameService {
                 .stream()
                 .map(GenreResponseDTO::getName)
                 .collect(Collectors.toList()));
-        game.setArtworkUrls(igdbService.findArtworksByGameId(dto.getId())
+        game.setArtworkUrls(igdbService.findArtworksByGameId(igdbDto.getId())
                 .stream()
                 .map(ArtworkResponseDTO::getUrl)
                 .collect(Collectors.toList()));
-        game.setScreenshotUrls(igdbService.findScreenshotsByGameId(dto.getId())
+        game.setScreenshotUrls(igdbService.findScreenshotsByGameId(igdbDto.getId())
                 .stream()
                 .map(ScreenshotResponseDTO::getUrl)
                 .collect(Collectors.toList()));

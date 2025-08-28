@@ -1,6 +1,7 @@
 package com.example.backend.dto.IGDB;
 
 import com.example.backend.dto.response.GenreResponseDTO;
+import com.example.backend.dto.response.VideoResponseDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class IGDBGameDTO {
     private List<GenreResponseDTO> genres;
     @JsonProperty("artworks")
     private ArrayList<Integer> artworksIds;
+    @JsonProperty("videos")
+    private ArrayList<VideoResponseDTO> videos;
 
     public Long getId() {
         return id;
@@ -81,5 +84,13 @@ public class IGDBGameDTO {
 
     public void setArtworksIds(ArrayList<Integer> artworksIds) {
         this.artworksIds = artworksIds;
+    }
+
+    public ArrayList<VideoResponseDTO> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(ArrayList<VideoResponseDTO> videos) {
+        this.videos = videos;
     }
 }
