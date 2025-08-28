@@ -32,7 +32,7 @@ function interpolateColor(value) {
   return `rgb(${r},${g},${b})`;
 }
 
-export default function AddGameModal({ isOpen, onClose, game }) {
+export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
   const [formData, setFormData] = useState({ rating: 5, status: "" });
   const [statusOptions, setStatusOptions] = useState([]);
 
@@ -72,14 +72,14 @@ export default function AddGameModal({ isOpen, onClose, game }) {
       createdAt: "",
     };
 
-    onClose();
-
+    
     toast.promise(addGameToList(userGameData), {
       loading: "Adding game...",
       success: <b>Game added successfully!</b>,
       error: <b>Failed to add game. Please try again.</b>,
     });
-
+    onGameAdded?.();
+    onClose();
     setFormData({ rating: 5, status: "" });
   };
 

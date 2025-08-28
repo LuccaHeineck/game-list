@@ -16,6 +16,7 @@ export default function GameDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isInList, setIsInList] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -48,6 +49,10 @@ export default function GameDetails() {
 
     loadData();
 
+    if (game && gameList) {
+      setIsInList(gameList.some(item => item.gameId == game.id));
+    }
+
     return () => {
       isMounted = false;
     };
@@ -65,8 +70,7 @@ export default function GameDetails() {
   }
 
   function truncateRating(rating) {
-    const val = rating / 10;
-    return Math.floor(val * 100) / 100;
+    return Math.round(rating / 10 * 10) / 10;
   }
 
   const handleAddModalOpen = () => {
@@ -81,7 +85,6 @@ export default function GameDetails() {
   if (loading) return <Loader />;
   if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
   if (!game) return null;
-  const isInList = gameList.some(item => item.gameId == game.id);
 
   return (
     <>
@@ -118,7 +121,7 @@ export default function GameDetails() {
               <div className="flex items-center gap-1 text-yellow-500">
                 <StarIcon className="w-6 h-6" />
                 <span className="text-lg font-semibold">
-                  {truncateRating(game.rating).toFixed(2)}
+                  {truncateRating(game.rating).toFixed(1)}
                 </span>
               </div>
             </div>
@@ -178,6 +181,7 @@ export default function GameDetails() {
         isOpen={isAddModalOpen} 
         onClose={handleAddModalClose} 
         game={game} 
+        onGameAdded={() => setIsInList(true)}
       />
     </>
   );
