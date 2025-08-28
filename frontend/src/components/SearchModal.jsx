@@ -6,10 +6,8 @@ export default function SearchModal({ isOpen, onClose, onGameSelect }) {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState([]);
 
-	// Lock scroll on body when modal is open
 	useEffect(() => {
     if (isOpen) {
-        // Disable scroll by setting style directly
         document.body.style.overflow = "hidden";
     } else {
         document.body.style.overflow = "";
@@ -97,11 +95,21 @@ export default function SearchModal({ isOpen, onClose, onGameSelect }) {
 								)}
 								<div className="flex flex-col">
 									<p className="font-semibold text-sm">{game.name}</p>
-									{game.first_release_date && (
-										<p className="text-xs text-gray-500">
-											{new Date(game.first_release_date * 1000).getFullYear()}
-										</p>
-									)}
+									<div className="flex mt-2">
+										{game.first_release_date && (
+											<p className="text-xs text-gray-500">
+												{new Date(game.first_release_date * 1000).getFullYear()}
+											</p>
+										)}
+										{game.first_release_date && game.genres && game.genres.length > 0 && (
+											<p className="text-xs text-gray-500 mx-2">|</p>
+										)}
+										{game.genres && (
+											<p className="text-xs text-gray-500">
+												{game.genres.map((genre) => genre.name).join(", ")}
+											</p>
+										)}
+									</div>
 								</div>
 							</div>
 						</div>

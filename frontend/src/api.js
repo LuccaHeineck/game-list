@@ -77,7 +77,6 @@ export async function fetchGameInfoById(id) {
   if (!response.ok) {
     throw new Error("Unauthorized");
   }
-  console.log(response);
 
   return await response.json();
 }
@@ -178,8 +177,6 @@ export async function fetchStatusList() {
 export async function updateGameInList(userGame) {
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
-
-  console.log(userGame);
 
   try {
     const response = await fetch(

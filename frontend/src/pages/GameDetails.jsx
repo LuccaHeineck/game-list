@@ -34,7 +34,6 @@ export default function GameDetails() {
         if (!isMounted) return;
 
         setGame(gameData);
-        console.log(gameData);
         
         document.title = gameData.name || "Game Details";
         setGameList(userList);

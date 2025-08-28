@@ -21,7 +21,6 @@ export default function Register({ onRegister }) {
 
     try {
       const data = await registerUser(username, email, password);
-      console.log(username, password)
       localStorage.setItem("token", data.token); // save token
       onRegister(); // e.g. redirect to /games
     } catch (err) {
