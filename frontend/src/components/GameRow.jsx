@@ -78,7 +78,7 @@ export default function GameRow({ entry, onClick, onEdit, statusId }) {
                   year: "numeric",
                 })
               : "No date"}
-          </div>
+          </div> 
         </div>
 
         {/* Rating */}
@@ -89,7 +89,7 @@ export default function GameRow({ entry, onClick, onEdit, statusId }) {
               color: ratingColor,
             }}
           >
-            {rating.toFixed(1)}
+            {rating === 0 ? "- . -" : rating.toFixed(1)}
           </div>
         )}
 

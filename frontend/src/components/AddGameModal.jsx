@@ -3,37 +3,10 @@ import { useState, useEffect } from "react";
 import { addGameToList, fetchStatusList } from "../api";
 import toast from "react-hot-toast";
 import { STATUSES } from "../config/statuses";
-
-const ratingColors = [
-  "#ef4444", "#f59e0b", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6",
-];
-
-function hexToRgb(hex) {
-  hex = hex.replace(/^#/, "");
-  if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
-  const num = parseInt(hex, 16);
-  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
-}
-
-function interpolateColor(value) {
-  const maxIndex = ratingColors.length - 1;
-  const scaled = (value / 10) * maxIndex;
-  const indexLow = Math.floor(scaled);
-  const indexHigh = Math.min(Math.ceil(scaled), maxIndex);
-  const ratio = scaled - indexLow;
-
-  const color1 = hexToRgb(ratingColors[indexLow]);
-  const color2 = hexToRgb(ratingColors[indexHigh]);
-
-  const r = Math.round(color1.r + (color2.r - color1.r) * ratio);
-  const g = Math.round(color1.g + (color2.g - color1.g) * ratio);
-  const b = Math.round(color1.b + (color2.b - color1.b) * ratio);
-
-  return `rgb(${r},${g},${b})`;
-}
+import { interpolateColor } from "../config/functions";
 
 export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
-  const [formData, setFormData] = useState({ rating: 5, status: "" });
+  const [formData, setFormData] = useState({ rating: 0, status: "" });
   const [statusOptions, setStatusOptions] = useState([]);
 
   useEffect(() => {
@@ -80,11 +53,11 @@ export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
     });
     onGameAdded?.(userGameData.statusId);
     onClose();
-    setFormData({ rating: 5, status: "" });
+    setFormData({ rating: 0, status: "" });
   };
 
   const handleClose = () => {
-    setFormData({ rating: 5, status: "" });
+    setFormData({ rating: 0, status: "" });
     onClose();
   };
 
@@ -113,7 +86,7 @@ export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
               className="mt-3 inline-flex items-center justify-center font-extrabold px-6 py-3 rounded-full text-4xl select-none drop-shadow-lg max-w-max"
               style={{ color: sliderColor, border: `3px solid ${sliderColor}` }}
             >
-              {formData.rating.toFixed(1)}
+              {formData.rating === 0 ? "-" : formData.rating.toFixed(1)}
             </div>
           </div>
         </div>

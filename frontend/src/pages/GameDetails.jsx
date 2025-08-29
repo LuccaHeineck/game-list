@@ -175,7 +175,7 @@ export default function GameDetails() {
                 </div>
 
                 {/* Your Rating */}
-                {userRating !== null && (
+                {userRating !== null && userRating > 0 && (
                   <div className="flex flex-col items-center">
                     <h3
                       className="text-sm"

@@ -19,6 +19,8 @@ export function hexToRgb(hex) {
 }
 
 export function interpolateColor(value) {
+  if (value <= 0) return "gray";
+
   const maxIndex = ratingColors.length - 1;
   const scaled = (value / 10) * maxIndex;
   const indexLow = Math.floor(scaled);
