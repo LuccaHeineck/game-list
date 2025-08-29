@@ -44,4 +44,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Author
 
-Made with ❤️ by [LuccaHeineck](https://github.com/LuccaHeineck).
+Made by [LuccaHeineck](https://github.com/LuccaHeineck).
