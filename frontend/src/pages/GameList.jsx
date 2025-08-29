@@ -229,6 +229,7 @@ export default function GameList() {
 							<GameRow
 								key={entry.game.id}
 								entry={entry}
+								statusId={entry.statusId}
 								onClick={() => navigate(`/gamedetails/${entry.game.id}`)}
 								onEdit={() => { setModalGame(entry); setIsModalOpen(true); }}
 							/>

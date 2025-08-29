@@ -178,6 +178,7 @@ public class GameService {
                 .stream()
                 .map(ScreenshotResponseDTO::getUrl)
                 .collect(Collectors.toList()));
+        game.setHltb(igdbService.findHLTBByGameId(igdbDto.getId()));
 
         return game;
     }

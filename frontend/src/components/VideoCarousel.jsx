@@ -27,13 +27,13 @@ export default function VideoCarousel({ videoUrls }) {
   }
 
   return (
-    <div className="relative w-full group">
+    <div className="relative w-full group h-auto">
       {/* Main video */}
-      <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900">
+      <div className="relativeaspect-video overflow-hidden rounded-xl bg-gray-900">
         <iframe
           src={`https://www.youtube.com/embed/${videoUrls[currentIndex]}?rel=0&showinfo=0`}
           title={`Video ${currentIndex + 1}`}
-          className="w-full h-full"
+          className="w-full h-full aspect-video"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />

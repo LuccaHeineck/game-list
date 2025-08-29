@@ -1,34 +1,8 @@
 import { PencilIcon } from "@heroicons/react/24/outline";
+import { interpolateColor } from "../config/functions";
+import { STATUSES } from "../config/statuses";
 
-const ratingColors = [
-  "#ef4444", "#f59e0b", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6",
-];
-
-function hexToRgb(hex) {
-  hex = hex.replace(/^#/, "");
-  if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
-  const num = parseInt(hex, 16);
-  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
-}
-
-function interpolateColor(value) {
-  const maxIndex = ratingColors.length - 1;
-  const scaled = (value / 10) * maxIndex;
-  const indexLow = Math.floor(scaled);
-  const indexHigh = Math.min(Math.ceil(scaled), maxIndex);
-  const ratio = scaled - indexLow;
-
-  const color1 = hexToRgb(ratingColors[indexLow]);
-  const color2 = hexToRgb(ratingColors[indexHigh]);
-
-  const r = Math.round(color1.r + (color2.r - color1.r) * ratio);
-  const g = Math.round(color1.g + (color2.g - color1.g) * ratio);
-  const b = Math.round(color1.b + (color2.b - color1.b) * ratio);
-
-  return `rgb(${r},${g},${b})`;
-}
-
-export default function GameRow({ entry, onClick, onEdit }) {
+export default function GameRow({ entry, onClick, onEdit, statusId }) {
   const { game, completionDate, rating } = entry;
   const coverUrl = `https:${game.coverUrl.replace("t_thumb", "t_cover_big")}`;
   const ratingColor = rating !== null ? interpolateColor(rating) : "#aaa";
@@ -64,20 +38,34 @@ export default function GameRow({ entry, onClick, onEdit }) {
 			}}
 		/>
 
-        {/* Info do jogo */}
-        <div className="flex flex-col flex-grow min-w-0">
-          {/* Nome do jogo quebra linha */}
+      {/* Info do jogo */}
+      <div className="flex flex-col flex-grow min-w-0">
+        {/* Badge + Title */}
+        <div className="flex items-center gap-2 mb-1">
+          {statusId && STATUSES[statusId] && (() => {
+            const StatusIcon = STATUSES[statusId].icon;
+            const bgClass = STATUSES[statusId].color; // e.g., "bg-white"
+            return StatusIcon ? (
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center ${bgClass}`}>
+                <StatusIcon className="w-3 h-3 text-zinc-900" />
+              </div>
+            ) : null;
+          })()}
+          
           <h3 className="text-white font-semibold break-words">
             {game.name}
           </h3>
-
-          {/* Gêneros truncados após X caracteres */}
-          <p className="text-zinc-400 text-sm">
-            {game.genreNames.join(", ").length > 70
-              ? game.genreNames.join(", ").slice(0, 70) + "..."
-              : game.genreNames.join(", ")}
-          </p>
         </div>
+
+        {/* Genres */}
+        <p className="text-zinc-400 text-sm">
+          {game.genreNames.join(", ").length > 70
+            ? game.genreNames.join(", ").slice(0, 70) + "..."
+            : game.genreNames.join(", ")}
+        </p>
+      </div>
+
+
 
 
         {/* Completion date */}

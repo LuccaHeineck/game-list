@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.IGDB.HLTBDTO;
 import com.example.backend.dto.IGDB.IGDBGameDTO;
 import com.example.backend.dto.response.ArtworkResponseDTO;
 import com.example.backend.dto.response.GameResponseDTO;
@@ -179,7 +180,26 @@ public class IGDBService {
         String url = "https://api.igdb.com/v4/games";
         HttpHeaders headers = createHeaders();
 
-        String body = "where id = " + id + "; fields id,name,rating,summary,genres.name,cover.url,first_release_date,artworks,videos.video_id;";
+        String body = "where id = " + id + ";" +
+                """
+                fields
+                    id,
+                    name,
+                    rating,
+                    summary,
+                    storyline,
+                    genres.name,
+                    cover.url,
+                    first_release_date,
+                    artworks,
+                    videos.video_id,
+                    game_type.type,
+                    platforms.name,
+                    involved_companies.developer,
+                    involved_companies.publisher,
+                    involved_companies.company.name,
+                    involved_companies.company.logo.image_id;
+                """;
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
@@ -247,6 +267,23 @@ public class IGDBService {
             return gameDTOList;
         } else {
             return Collections.emptyList();
+        }
+    }
+
+    public HLTBDTO findHLTBByGameId(Long id) {
+        String url = "https://api.igdb.com/v4/game_time_to_beats";
+        HttpHeaders headers = createHeaders();
+
+        String body = "fields game_id,hastily,normally,completely; where game_id = " + id + ";";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<HLTBDTO[]> response = restTemplate.postForEntity(url, entity, HLTBDTO[].class);
+
+        if (response.getBody() != null && response.getBody().length > 0) {
+            return response.getBody()[0];
+        } else {
+            return null;
         }
     }
 }

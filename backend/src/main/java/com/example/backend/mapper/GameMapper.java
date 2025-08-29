@@ -1,6 +1,8 @@
 package com.example.backend.mapper;
 
 import com.example.backend.dto.IGDB.IGDBGameDTO;
+import com.example.backend.dto.IGDB.InvolvedCompanyDTO;
+import com.example.backend.dto.IGDB.PlatformDTO;
 import com.example.backend.dto.request.GameRequestDTO;
 import com.example.backend.dto.response.GameResponseDTO;
 import com.example.backend.dto.response.VideoResponseDTO;
@@ -107,6 +109,27 @@ public class GameMapper {
                 game.getVideos() == null ? Collections.emptyList() :
                         game.getVideos().stream().map(VideoResponseDTO::getVideoId).toList()
         );
+        dto.setGameType(game.getGameType().getType());
+        dto.setPlatforms(
+                game.getPlatforms() == null ? Collections.emptyList() :
+                        game.getPlatforms().stream().map(PlatformDTO::getName).toList()
+        );
+        dto.setPublishers(
+                game.getInvolvedCompanies() == null ? Collections.emptyList() :
+                        game.getInvolvedCompanies().stream()
+                                .filter(InvolvedCompanyDTO::isPublisher) // only publishers
+                                .map(involved -> involved.getCompany().getName()) // get company name if publisher
+                                .toList()
+        );
+        dto.setDevelopers(
+                game.getInvolvedCompanies() == null ? Collections.emptyList() :
+                        game.getInvolvedCompanies().stream()
+                                .filter(InvolvedCompanyDTO::isDeveloper) // only developers
+                                .map(involved -> involved.getCompany().getName()) // get company name if developer
+                                .toList()
+        );
+        dto.setStoryline(game.getStoryline());
+
         return dto;
     }
 

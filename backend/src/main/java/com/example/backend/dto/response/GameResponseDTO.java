@@ -1,5 +1,7 @@
 package com.example.backend.dto.response;
 
+import com.example.backend.dto.IGDB.HLTBDTO;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,12 +14,18 @@ public class GameResponseDTO {
     private String coverUrl;
     private Double rating;
     private LocalDateTime createdAt;
+    private String gameType;
+    private String storyline;
 
     private List<String> genreNames; // List of genre names for the game
     private List<String> artworkUrls; // List of artwork URLs for the game
     private List<String> videoUrls; // List of videos URLs for the game
     private List<String> screenshotUrls; // List of screenshot URLs for the game
+    private List<String> platforms; // List of platforms for the game
+    private List<String> publishers; // List of publishers for the game
+    private List<String> developers; // List of developers for the game
 
+    private HLTBDTO hltb;
     // Getters and setters
 
     public Long getId() {
@@ -106,5 +114,53 @@ public class GameResponseDTO {
 
     public void setVideoUrls(List<String> videoUrls) {
         this.videoUrls = videoUrls;
+    }
+
+    public String getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
+    }
+
+    public List<String> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(List<String> platforms) {
+        this.platforms = platforms;
+    }
+
+    public List<String> getPublishers() {
+        return publishers;
+    }
+
+    public void setPublishers(List<String> publishers) {
+        this.publishers = publishers;
+    }
+
+    public List<String> getDevelopers() {
+        return developers;
+    }
+
+    public void setDevelopers(List<String> developers) {
+        this.developers = developers;
+    }
+
+    public HLTBDTO getHltb() {
+        return hltb;
+    }
+
+    public void setHltb(HLTBDTO hltb) {
+        this.hltb = hltb;
+    }
+
+    public String getStoryline() {
+        return storyline;
+    }
+
+    public void setStoryline(String storyline) {
+        this.storyline = storyline;
     }
 }

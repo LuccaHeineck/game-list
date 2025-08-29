@@ -13,6 +13,7 @@ public class IGDBGameDTO {
     private String name;
     private Double rating;
     private String summary;
+    private String storyline;
     private CoverDTO cover;
     @JsonProperty("first_release_date")
     private Long releaseDate;
@@ -21,6 +22,12 @@ public class IGDBGameDTO {
     private ArrayList<Integer> artworksIds;
     @JsonProperty("videos")
     private ArrayList<VideoResponseDTO> videos;
+    @JsonProperty("game_type")
+    private GameTypeDTO gameType;
+    @JsonProperty("platforms")
+    private ArrayList<PlatformDTO> platforms;
+    @JsonProperty("involved_companies")
+    private ArrayList<InvolvedCompanyDTO> involvedCompanies;
 
     public Long getId() {
         return id;
@@ -92,5 +99,37 @@ public class IGDBGameDTO {
 
     public void setVideos(ArrayList<VideoResponseDTO> videos) {
         this.videos = videos;
+    }
+
+    public GameTypeDTO getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(GameTypeDTO gameType) {
+        this.gameType = gameType;
+    }
+
+    public ArrayList<PlatformDTO> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(ArrayList<PlatformDTO> platforms) {
+        this.platforms = platforms;
+    }
+
+    public ArrayList<InvolvedCompanyDTO> getInvolvedCompanies() {
+        return involvedCompanies;
+    }
+
+    public void setInvolvedCompanies(ArrayList<InvolvedCompanyDTO> involvedCompanies) {
+        this.involvedCompanies = involvedCompanies;
+    }
+
+    public String getStoryline() {
+        return storyline;
+    }
+
+    public void setStoryline(String storyline) {
+        this.storyline = storyline;
     }
 }

@@ -78,7 +78,7 @@ export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
       success: <b>Game added successfully!</b>,
       error: <b>Failed to add game. Please try again.</b>,
     });
-    onGameAdded?.();
+    onGameAdded?.(userGameData.statusId);
     onClose();
     setFormData({ rating: 5, status: "" });
   };
