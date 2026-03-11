@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { registerUser } from "../api.js"
 import QuoteBanner from "../components/QuoteBanner.jsx";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
 
 export default function Register({ onRegister }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
       document.title = "Create Account";
@@ -17,15 +17,16 @@ export default function Register({ onRegister }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
       const data = await registerUser(username, email, password);
       localStorage.setItem("token", data.token); // save token
       onRegister(); // e.g. redirect to /games
-    } catch (err) {
-      setError("Invalid credentials");
-    }
+    }catch (err) {
+      toast.error("Invalid credentials", {
+      position: "top-center",
+    });
+}
   };
 
   return (
@@ -120,7 +121,6 @@ export default function Register({ onRegister }) {
               Sign in
             </a>
           </p>
-          {error && <p className="text-red-500">{error}</p>}
         </form>
       </div>
   </div>
