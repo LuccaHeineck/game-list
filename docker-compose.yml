@@ -1,6 +1,7 @@
 services:
   db:
-    image: mysql
+    image: mysql:8.0
+    container_name: game-list-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -9,16 +10,26 @@ services:
       - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - game-network
+    # This checks if MySQL is actually accepting connections yet
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
       context: ./backend
+    container_name: game-list-backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy  # Forces Spring to wait until the healthcheck above passes
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       ACCESS_TOKEN: ${ACCESS_TOKEN}
       CLIENT_ID: ${CLIENT_ID}
       JWT_SECRET: ${JWT_SECRET}
@@ -26,6 +37,26 @@ services:
     ports:
       - "8080:8080"
     restart: always
+    networks:
+      - game-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: game-list-frontend
+    ports:
+      - "5173:5173"
+    restart: always
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080
+    depends_on:
+      - backend
+    networks:
+      - game-network
 
 volumes:
   mysql_data:
+
+networks:
+  game-network:
+    driver: bridge
