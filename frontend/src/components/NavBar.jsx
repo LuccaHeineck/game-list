@@ -1,12 +1,13 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { UserIcon } from "@heroicons/react/24/solid";
 import { HomeIcon, Squares2X2Icon, RectangleStackIcon, MagnifyingGlassIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import SearchModal from "./SearchModal";
+import { User, LogOut, ChevronDown } from "lucide-react";
 
 export default function NavBar() {
   const [username, setUsername] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -17,6 +18,14 @@ export default function NavBar() {
       setUsername(storedUsername);
     }
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const closeDropdown = () => setDropdownOpen(false);
+    document.addEventListener("click", closeDropdown);
+    return () => document.removeEventListener("click", closeDropdown);
+  }, [dropdownOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -49,35 +58,54 @@ export default function NavBar() {
         </div>
       </nav>
 
-      {/* Floating user info panel */}
-      <div className="fixed top-4 right-4 z-50 bg-zinc-800/30 backdrop-blur-md border border-white/10 px-5 py-3 rounded-full shadow-lg flex items-center gap-4 min-w-[180px]">
+      {/* Floating user info panel with premium dropdown */}
+      <div className="fixed top-4 right-4 z-50">
         {username ? (
-          <>
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition cursor-default">
-              <UserIcon className="w-5 h-5 text-white" />
-              <span className="text-white font-medium text-sm truncate">{username}</span>
-            </div>
+          <div className="relative">
+            {/* Dropdown Trigger */}
             <button
-              onClick={handleLogout}
-              className="flex items-center gap-1 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white text-sm px-3 py-1 rounded-full transition"
-              title="Logout"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDropdownOpen(!dropdownOpen);
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-800/40 backdrop-blur-md border border-white/10 hover:border-white/20 transition shadow-lg text-white select-none active:scale-95 cursor-pointer font-medium text-sm"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M3 4a1 1 0 011-1h6a1 1 0 110 2H5v10h5a1 1 0 110 2H4a1 1 0 01-1-1V4zm12.293 2.293a1 1 0 011.414 0L20 9.586a1 1 0 010 1.414l-3.293 3.293a1 1 0 01-1.414-1.414L16.586 11H9a1 1 0 110-2h7.586l-1.293-1.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Logout
+              <div className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-700/60 flex items-center justify-center text-zinc-300">
+                <User className="w-3.5 h-3.5" />
+              </div>
+              <span className="max-w-[100px] truncate">{username}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition duration-200 ${dropdownOpen ? "rotate-180" : ""}`} />
             </button>
-          </>
+
+            {/* Dropdown Content */}
+            {dropdownOpen && (
+              <div 
+                className="absolute right-0 mt-2 w-48 bg-zinc-900/90 backdrop-blur-md border border-zinc-800/80 p-1.5 rounded-2xl shadow-2xl flex flex-col gap-1 z-50 select-none"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="px-3 py-2 text-zinc-500 text-[10px] font-bold uppercase tracking-wider">
+                  Account
+                </div>
+                <div className="px-3 pb-2 text-white font-bold text-sm truncate">
+                  {username}
+                </div>
+                <div className="h-px bg-zinc-800/50 my-1 mx-1" />
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition text-sm font-semibold text-left"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <Link
             to="/login"
-            className="flex items-center gap-2 text-white text-sm px-4 py-1 rounded-full bg-white/10 hover:bg-white/20 transition"
+            className="flex items-center gap-2 text-white text-sm px-4 py-2 rounded-full bg-zinc-800/40 backdrop-blur-md border border-white/10 hover:bg-zinc-800/80 transition shadow-lg font-semibold"
           >
-            <UserIcon className="w-5 h-5" />
+            <User className="w-4 h-4" />
             Login
           </Link>
         )}
