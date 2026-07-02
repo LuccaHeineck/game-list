@@ -14,10 +14,11 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
+                        "http://177.44.248.110",
+                        "http://177.44.248.110:5173",
                                 "http://localhost:5173",
                                 "http://localhost:5174",
-                                "http://frontend:5173",
-                                "http://177.44.248.110:5173"
+                        "http://frontend:5173"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
