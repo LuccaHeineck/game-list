@@ -38,7 +38,7 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-zinc-800/30 backdrop-blur-md border border-white/10 py-3 rounded-full shadow-lg z-40 w-[90%] max-w-sm pl-12 pr-12">
+      <nav className="fixed left-1/2 bottom-4 md:top-4 md:bottom-auto transform -translate-x-1/2 bg-zinc-800/35 backdrop-blur-md border border-white/10 py-3 rounded-full shadow-lg z-40 w-[calc(100%-1rem)] max-w-sm px-8 md:px-12">
         <div className="flex justify-between text-lg text-white">
           <Link to="/" title="Home" className={`flex items-center text-xl ${isActive("/") ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]" : "text-gray-400 hover:text-white"}`}>
             <HomeIcon className="w-6 h-6" />
@@ -59,7 +59,7 @@ export default function NavBar() {
       </nav>
 
       {/* Floating user info panel with premium dropdown */}
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-4 right-4 z-50 max-w-[calc(100vw-1rem)]">
         {username ? (
           <div className="relative">
             {/* Dropdown Trigger */}
@@ -73,7 +73,7 @@ export default function NavBar() {
               <div className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-700/60 flex items-center justify-center text-zinc-300">
                 <User className="w-3.5 h-3.5" />
               </div>
-              <span className="max-w-[100px] truncate">{username}</span>
+              <span className="hidden sm:inline max-w-[100px] truncate">{username}</span>
               <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition duration-200 ${dropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
@@ -106,7 +106,7 @@ export default function NavBar() {
             className="flex items-center gap-2 text-white text-sm px-4 py-2 rounded-full bg-zinc-800/40 backdrop-blur-md border border-white/10 hover:bg-zinc-800/80 transition shadow-lg font-semibold"
           >
             <User className="w-4 h-4" />
-            Login
+            <span className="hidden sm:inline">Login</span>
           </Link>
         )}
       </div>
