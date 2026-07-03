@@ -15,16 +15,24 @@ import {
   TrendingUp
 } from "lucide-react";
 import { interpolateColor } from "../config/functions";
+import { hasValidSession } from "../config/auth";
 
 export default function Home() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [userList, setUserList] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const isAuthenticated = hasValidSession();
 
   useEffect(() => {
     document.title = "Game Library | Dashboard";
     window.scrollTo(0, 0);
+
+    if (!isAuthenticated) {
+      setUserList([]);
+      setLoading(false);
+      return;
+    }
 
     fetchUserList()
       .then((data) => {
@@ -33,9 +41,10 @@ export default function Home() {
       })
       .catch((err) => {
         console.error("Failed to fetch user list", err);
+        setUserList([]);
         setLoading(false);
       });
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     document.body.style.overflow = isSearchOpen ? "hidden" : "auto";
@@ -78,16 +87,33 @@ export default function Home() {
                           <Gamepad2 className="w-3.5 h-3.5 text-rose-400" /> Game Library Dashboard
             </div>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-none">
-              Welcome Back<span className="text-rose-500 font-black">.</span>
+              {isAuthenticated ? "Welcome Back" : "Discover Games"}
+              <span className="text-rose-500 font-black">.</span>
             </h1>
+            <p className="mt-4 max-w-2xl text-sm md:text-base text-zinc-500 leading-7">
+              {isAuthenticated
+                ? "Track your backlog, rate what you finish, and keep your collection organized."
+                : "Browse games freely, then sign in when you want to save a personal list."}
+            </p>
           </div>
-          <button
-            onClick={() => setIsSearchOpen(true)}
-            className="flex items-center gap-2 px-5 py-3 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 text-white rounded-2xl font-bold transition active:scale-95 shadow-xl shadow-black/40 shrink-0 text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Add New Game
-          </button>
+          {isAuthenticated ? (
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-2 px-5 py-3 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 text-white rounded-2xl font-bold transition active:scale-95 shadow-xl shadow-black/40 shrink-0 text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Add New Game
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              state={{ from: "/" }}
+              className="flex items-center gap-2 px-5 py-3 bg-white text-zinc-950 rounded-2xl font-bold transition hover:bg-zinc-200 active:scale-95 shadow-xl shadow-white/5 shrink-0 text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Log in to add games
+            </Link>
+          )}
         </div>
 
         {/* Dashboard Grid */}
@@ -168,13 +194,27 @@ export default function Home() {
               {currentlyPlaying.length === 0 ? (
                 <div className="bg-zinc-900/20 border border-zinc-800/40 border-dashed rounded-2xl p-8 text-center text-zinc-500">
                   <Gamepad2 className="w-10 h-10 mx-auto mb-3 text-zinc-600" />
-                  <p className="text-sm font-medium">Not playing anything right now.</p>
-                  <button 
-                    onClick={() => setIsSearchOpen(true)}
-                    className="mt-2 text-xs font-bold text-zinc-400 hover:text-white transition"
-                  >
-                    Start a game +
-                  </button>
+                  <p className="text-sm font-medium">
+                    {isAuthenticated
+                      ? "Not playing anything right now."
+                      : "Sign in to track what you are playing."}
+                  </p>
+                  {isAuthenticated ? (
+                    <button 
+                      onClick={() => setIsSearchOpen(true)}
+                      className="mt-2 text-xs font-bold text-zinc-400 hover:text-white transition"
+                    >
+                      Start a game +
+                    </button>
+                  ) : (
+                    <Link
+                      to="/login"
+                      state={{ from: "/" }}
+                      className="mt-2 inline-flex text-xs font-bold text-zinc-200 hover:text-white transition"
+                    >
+                      Log in to start tracking
+                    </Link>
+                  )}
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -240,8 +280,14 @@ export default function Home() {
               {recentlyAdded.length === 0 ? (
                 <div className="bg-zinc-900/20 border border-zinc-800/40 border-dashed rounded-2xl p-8 text-center text-zinc-500">
                   <Library className="w-10 h-10 mx-auto mb-3 text-zinc-600" />
-                  <p className="text-sm font-medium">Your library is empty.</p>
-                  <p className="text-xs text-zinc-600 mt-1">Add games to start building your profile.</p>
+                  <p className="text-sm font-medium">
+                    {isAuthenticated ? "Your library is empty." : "Log in to start building your profile."}
+                  </p>
+                  <p className="text-xs text-zinc-600 mt-1">
+                    {isAuthenticated
+                      ? "Add games to start building your profile."
+                      : "Your progress will appear here once you sign in."}
+                  </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">

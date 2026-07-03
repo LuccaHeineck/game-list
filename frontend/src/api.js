@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "./config/auth";
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -31,12 +33,8 @@ export async function registerUser(username, email, password) {
 }
 
 export async function fetchAllDBGames() {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${API_BASE_URL}/api/games`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
   if (!response.ok) {
     throw new Error("Unauthorized");
@@ -45,17 +43,13 @@ export async function fetchAllDBGames() {
 }
 
 export async function fetchGamesByName(name) {
-  const token = localStorage.getItem("token");
-
   // Encode the name for URL safety
   const encodedName = encodeURIComponent(name);
 
   const response = await fetch(
     `${API_BASE_URL}/api/IGDB/games?name=${encodedName}`,
     {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     }
   );
 
@@ -67,12 +61,8 @@ export async function fetchGamesByName(name) {
 }
 
 export async function fetchGameInfoById(id) {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${API_BASE_URL}/api/games/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
   if (!response.ok) {
     throw new Error("Unauthorized");
@@ -82,12 +72,8 @@ export async function fetchGameInfoById(id) {
 }
 
 export async function fetchGamesByGenres() {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${API_BASE_URL}/api/IGDB/games-by-genres`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
   if (!response.ok) {
     throw new Error("Unauthorized");
@@ -96,14 +82,10 @@ export async function fetchGamesByGenres() {
 }
 
 export async function fetchGamesByGenre(genreId) {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(
     `${API_BASE_URL}/api/IGDB/games-genres?genreId=${genreId}`,
     {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     }
   );
 
@@ -116,14 +98,18 @@ export async function fetchGamesByGenre(genreId) {
 }
 
 export async function addGameToList(userGame) {
-  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/user-games`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...getAuthHeaders({}, { requireAuth: true }),
       },
       body: JSON.stringify(userGame),
     });
@@ -140,15 +126,16 @@ export async function addGameToList(userGame) {
 }
 
 export async function fetchUserList() {
-  const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
 
   const response = await fetch(
     `${API_BASE_URL}/api/user-games/user/${userId}`,
     {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders({}, { requireAuth: true }),
     }
   );
 
@@ -160,11 +147,8 @@ export async function fetchUserList() {
 }
 
 export async function fetchStatusList() {
-  const token = localStorage.getItem("token");
   const response = await fetch(`${API_BASE_URL}/api/status`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
   if (!response.ok) {
     throw new Error("Unauthorized");
@@ -175,8 +159,11 @@ export async function fetchStatusList() {
 }
 
 export async function updateGameInList(userGame) {
-  const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
 
   try {
     const response = await fetch(
@@ -185,7 +172,7 @@ export async function updateGameInList(userGame) {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          ...getAuthHeaders({}, { requireAuth: true }),
         },
         body: JSON.stringify(userGame),
       }
@@ -203,16 +190,17 @@ export async function updateGameInList(userGame) {
 }
 
 export async function deleteGameFromList(gameId) {
-  const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
 
   const response = await fetch(
     `${API_BASE_URL}/api/user-games/user/${userId}/game/${gameId}`,
     {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders({}, { requireAuth: true }),
     }
   );
 

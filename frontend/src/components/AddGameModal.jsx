@@ -4,10 +4,14 @@ import { addGameToList, fetchStatusList } from "../api";
 import toast from "react-hot-toast";
 import { STATUSES } from "../config/statuses";
 import { interpolateColor } from "../config/functions";
+import { Link, useLocation } from "react-router-dom";
+import { hasValidSession } from "../config/auth";
 
 export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
   const [formData, setFormData] = useState({ rating: 0, status: "" });
   const [statusOptions, setStatusOptions] = useState([]);
+  const location = useLocation();
+  const isAuthenticated = hasValidSession();
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -15,7 +19,7 @@ export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
   }, [isOpen]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && isAuthenticated) {
       fetchStatusList().then((data) =>
         setStatusOptions(
           data.map((status) => ({
@@ -24,8 +28,10 @@ export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
           }))
         )
       );
+    } else if (isOpen) {
+      setStatusOptions([]);
     }
-  }, [isOpen]);
+  }, [isOpen, isAuthenticated]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,6 +40,10 @@ export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isAuthenticated) {
+      return;
+    }
 
     const userGameData = {
       gameId: game.id,
@@ -62,6 +72,40 @@ export default function AddGameModal({ isOpen, onClose, game, onGameAdded }) {
   };
 
   if (!isOpen) return null;
+
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-zinc-900 text-white max-w-xl w-full rounded-xl shadow-xl flex flex-col overflow-hidden border border-white/10 p-8"
+        >
+          <div className="flex flex-col gap-4">
+            <h2 className="text-3xl font-extrabold leading-tight">Log in to add games</h2>
+            <p className="text-zinc-400 leading-7">
+              Saving this game to your list requires an account.
+            </p>
+            <div className="flex justify-end space-x-4 pt-4">
+              <button
+                type="button"
+                onClick={handleClose}
+                className="px-5 py-2 rounded-lg border border-white/80 hover:bg-zinc-600 text-zinc-300 transition"
+              >
+                Cancel
+              </button>
+              <Link
+                to="/login"
+                state={{ from: location.pathname }}
+                className="px-5 py-2 rounded-lg bg-white text-zinc-950 font-semibold transition shadow-lg hover:bg-zinc-200"
+              >
+                Log in
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const sliderColor = interpolateColor(formData.rating);
 

@@ -8,6 +8,7 @@ import { fetchGameInfoById, fetchUserList } from "../api";
 import { STATUSES } from "../config/statuses";
 import Game from "../config/Game";
 import { interpolateColor } from "../config/functions";
+import { hasValidSession } from "../config/auth";
 import {
   ArrowLeft,
   Star,
@@ -35,6 +36,7 @@ export default function GameDetails() {
   const [isInList, setIsInList] = useState(false);
   const [gameStatus, setGameStatus] = useState(null);
   const [userRating, setuserRating] = useState(null);
+  const isAuthenticated = hasValidSession();
 
   useEffect(() => {
     let isMounted = true;
@@ -44,10 +46,7 @@ export default function GameDetails() {
 
     const loadData = async () => {
       try {
-        const [gameData, userList] = await Promise.all([
-          fetchGameInfoById(gameid),
-          fetchUserList(),
-        ]);
+        const gameData = await fetchGameInfoById(gameid);
 
         if (!isMounted) return;
 
@@ -55,7 +54,14 @@ export default function GameDetails() {
         setGame(parsedGame);
 
         document.title = parsedGame.name || "Game Details";
-        setGameList(userList);
+
+        if (isAuthenticated) {
+          const userList = await fetchUserList();
+          if (!isMounted) return;
+          setGameList(userList);
+        } else {
+          setGameList([]);
+        }
       } catch (err) {
         if (!isMounted) return;
         setError(err.message || "Failed to load data");
@@ -70,7 +76,7 @@ export default function GameDetails() {
     return () => {
       isMounted = false;
     };
-  }, [gameid, navigate]);
+  }, [gameid, navigate, isAuthenticated]);
 
   useEffect(() => {
     if (!game || !gameList) return;
@@ -98,7 +104,7 @@ export default function GameDetails() {
     handleAddModalClose();
   };
 
-  if (!gameList || loading) return <Loader />;
+  if (loading) return <Loader />;
   if (error) return <div className="text-center mt-24 text-red-500 font-semibold">{error}</div>;
   if (!game) return null;
 
@@ -231,7 +237,7 @@ export default function GameDetails() {
                     <Check className="w-4 h-4 text-rose-400" />
                     View in List
                   </Link>
-                ) : (
+                ) : isAuthenticated ? (
                   <button
                     onClick={handleAddModalOpen}
                     className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-white text-zinc-950 rounded-2xl font-bold transition hover:bg-zinc-200 active:scale-95 shadow-xl shadow-white/5 text-sm"
@@ -239,6 +245,15 @@ export default function GameDetails() {
                     <Plus className="w-4 h-4" />
                     Add Game
                   </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    state={{ from: `/gamedetails/${gameid}` }}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-white text-zinc-950 rounded-2xl font-bold transition hover:bg-zinc-200 active:scale-95 shadow-xl shadow-white/5 text-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Log in to add
+                  </Link>
                 )}
               </div>
             </div>

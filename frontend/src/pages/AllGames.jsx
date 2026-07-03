@@ -51,12 +51,6 @@ export default function AllGames() {
   useEffect(() => {
     document.title = "Discover Games";
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
     const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY)) || {};
     const now = Date.now();
 
@@ -87,11 +81,7 @@ export default function AllGames() {
         };
         localStorage.setItem(CACHE_KEY, JSON.stringify(updatedCache));
       } catch (err) {
-        if (err.message === "Unauthorized") {
-          navigate("/login");
-        } else {
-          setError(err.message);
-        }
+        setError(err.message);
       } finally {
         // Wait 300ms before next request
         setTimeout(() => fetchWithDelay(index + 1), 300);

@@ -18,6 +18,8 @@ import EditGameModal from "../components/EditGameModal";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "../components/ConfirmModal";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import { hasValidSession } from "../config/auth";
 
 function SortIcon({ field, currentSort, currentOrder }) {
   const isActive = currentSort === field;
@@ -53,6 +55,7 @@ export default function GameList() {
   const [confirmDeleteGame, setConfirmDeleteGame] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const navigate = useNavigate();
+  const isAuthenticated = hasValidSession();
 
   const statuses = useMemo(() => {
     const statList = Object.entries(STATUSES).map(([id, config]) => ({
@@ -69,6 +72,12 @@ export default function GameList() {
     setLoading(true);
     setError(null);
 
+    if (!isAuthenticated) {
+      setGames([]);
+      setLoading(false);
+      return;
+    }
+
     const loadData = async () => {
       try {
         const gamesData = await fetchUserList();
@@ -82,7 +91,7 @@ export default function GameList() {
 
     loadData();
     window.scrollTo(0, 0);
-  }, []);
+  }, [isAuthenticated]);
 
   const handleDeleteClick = (game) => {
     setConfirmDeleteGame(game);
@@ -159,6 +168,45 @@ export default function GameList() {
 
   if (loading) return <Loader />;
   if (error) return <div className="text-center mt-24 text-red-500 font-semibold">{error}</div>;
+
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 md:px-8 pt-24 pb-24 min-h-screen bg-[#09090b] text-white">
+        <div className="mb-10 select-none">
+          <div className="flex items-center gap-1.5 text-zinc-500 font-semibold tracking-wider text-xs uppercase mb-2">
+            <Gamepad2 className="w-3.5 h-3.5 text-rose-400" /> Personal Library
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-none">
+            My Collection<span className="text-rose-500 font-black">.</span>
+          </h1>
+        </div>
+
+        <div className="bg-zinc-900/45 border border-zinc-800/70 rounded-3xl p-8 md:p-10 shadow-2xl shadow-black/30 backdrop-blur-md">
+          <p className="text-lg md:text-xl font-semibold text-white leading-8">
+            Log in to start adding games to your list.
+          </p>
+          <p className="mt-3 text-zinc-400 leading-7 max-w-2xl">
+            Your collection, ratings, and completion status will show up here once you sign in.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              to="/login"
+              state={{ from: "/list" }}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-zinc-950 font-bold transition hover:bg-zinc-200 active:scale-95"
+            >
+              Log in
+            </Link>
+            <Link
+              to="/games"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-zinc-900 border border-zinc-800 text-white font-bold transition hover:bg-zinc-850 active:scale-95"
+            >
+              Browse games
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 pb-24 min-h-screen bg-[#09090b]">

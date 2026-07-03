@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { HomeIcon, Squares2X2Icon, RectangleStackIcon, MagnifyingGlassIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import SearchModal from "./SearchModal";
 import { User, LogOut, ChevronDown } from "lucide-react";
+import { hasValidSession } from "../config/auth";
 
 export default function NavBar() {
   const [username, setUsername] = useState(null);
@@ -13,9 +14,10 @@ export default function NavBar() {
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
-    const token = localStorage.getItem("token");
-    if (token && storedUsername) {
+    if (hasValidSession() && storedUsername) {
       setUsername(storedUsername);
+    } else {
+      setUsername(null);
     }
   }, []);
 
@@ -30,8 +32,9 @@ export default function NavBar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem("userId");
     setUsername(null);
-    navigate("/login");
+    navigate("/");
   };
 
   const isActive = (path) => location.pathname === path;
@@ -103,10 +106,11 @@ export default function NavBar() {
         ) : (
           <Link
             to="/login"
+            state={{ from: location.pathname }}
             className="flex items-center gap-2 text-white text-sm px-4 py-2 rounded-full bg-zinc-800/40 backdrop-blur-md border border-white/10 hover:bg-zinc-800/80 transition shadow-lg font-semibold"
           >
             <User className="w-4 h-4" />
-            <span className="hidden sm:inline">Login</span>
+            <span className="hidden sm:inline">Log in</span>
           </Link>
         )}
       </div>
