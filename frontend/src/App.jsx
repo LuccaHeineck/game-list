@@ -50,7 +50,7 @@ function LoginWrapper() {
 
 function RegisterWrapper() {
   const navigate = useNavigate();
-  return <Register onRegister={() => navigate("/login")} />;
+  return <Register onRegister={(state) => navigate("/login", { replace: true, state })} />;
 }
 
 export default App;

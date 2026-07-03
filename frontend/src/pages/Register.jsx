@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { registerUser } from "../api.js"
+import { Link } from "react-router-dom";
+import { registerUser } from "../api.js";
 import QuoteBanner from "../components/QuoteBanner.jsx";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
@@ -9,6 +10,7 @@ export default function Register({ onRegister }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
       document.title = "Create Account";
@@ -17,16 +19,22 @@ export default function Register({ onRegister }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const data = await registerUser(username, email, password);
       localStorage.setItem("token", data.token); // save token
-      onRegister(); // e.g. redirect to /games
-    }catch (err) {
+      toast.success("Account created. Redirecting to sign in...", {
+        position: "top-center",
+      });
+      onRegister?.({ username });
+    } catch (err) {
       toast.error("Invalid credentials", {
-      position: "top-center",
-    });
-}
+        position: "top-center",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -41,7 +49,7 @@ export default function Register({ onRegister }) {
               }}
             />
       
-      <div className="max-w-md mx-auto -mt-[40rem] p-6 bg-white/10 dark:bg-zinc-900/30 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl shadow-lg">
+      <div className="max-w-md mx-auto -mt-[40rem] p-6 bg-white/10 dark:bg-zinc-900/30 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-lg">
         <h2 className="text-xl font-bold mb-4">Register</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col">
@@ -53,7 +61,7 @@ export default function Register({ onRegister }) {
             </label>
             <input
               id="email"
-              className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white"
+              className="border border-white/10 p-3 rounded-xl bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white/40"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -69,8 +77,8 @@ export default function Register({ onRegister }) {
             </label>
             <input
               id="username"
-              className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white"
-              type="username"
+              className="border border-white/10 p-3 rounded-xl bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white/40"
+              type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -86,7 +94,7 @@ export default function Register({ onRegister }) {
             <div className="relative">
                 <input
                   id="password"
-                  className="border p-2 rounded-md bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white w-full pr-10"
+                  className="border border-white/10 p-3 rounded-xl bg-zinc-900/30 focus:outline-none focus:ring-2 focus:ring-white/40 w-full pr-10"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -107,19 +115,20 @@ export default function Register({ onRegister }) {
             </div>
           </div>
           <button
-            className="bg-white mt-6 text-black text-sm p-2 rounded-md hover:bg-white/90 transition"
+            className="bg-white mt-6 text-black text-sm p-3 rounded-xl hover:bg-white/90 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
             type="submit"
           >
-            Create Account
+            {isSubmitting ? "Creating account..." : "Create Account"}
           </button>
           <p className="text-center text-sm text-white/80">
             Already have an account?{" "}
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="font-bold underline transition-colors hover:text-white"
             >
               Sign in
-            </a>
+            </Link>
           </p>
         </form>
       </div>

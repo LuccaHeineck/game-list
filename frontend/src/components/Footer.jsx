@@ -12,7 +12,7 @@ export default function Footer() {
 				<div>
 					<h3 className="text-lg font-semibold mb-2 text-zinc-200">About</h3>
 					<p className="text-sm">
-						name is your personal game list. Track, rate, and explore your favorite titles with ease.
+						This is your personal game list. Track, rate, and explore your favorite titles with ease.
 					</p>
 				</div>
 
