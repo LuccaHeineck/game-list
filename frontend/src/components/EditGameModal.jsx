@@ -69,23 +69,23 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 transition-all duration-300"
+      className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 transition-all duration-300 overflow-y-auto"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-zinc-900/90 text-white max-w-3xl w-full rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-zinc-800/80 overflow-hidden flex flex-col md:flex-row transition-all duration-300"
+        className="relative bg-zinc-900/90 text-white max-w-3xl w-full rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-zinc-800/80 overflow-hidden flex flex-col md:flex-row transition-all duration-300 max-h-[calc(100vh-1.5rem)] md:max-h-[calc(100vh-2rem)] my-auto"
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-full bg-zinc-800/60 hover:bg-zinc-700/80 text-zinc-400 hover:text-white transition z-10"
+          className="absolute top-3 right-3 md:top-4 md:right-4 p-1.5 rounded-full bg-zinc-800/60 hover:bg-zinc-700/80 text-zinc-400 hover:text-white transition z-20"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Left Side: Game Cover & Info */}
-        <div className="md:w-2/5 bg-zinc-950/40 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-zinc-800/50 relative overflow-hidden">
+        <div className="md:w-2/5 bg-zinc-950/40 p-5 sm:p-6 md:p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-zinc-800/50 relative overflow-hidden">
           {/* Dynamic Background Glow */}
           <div 
             className="absolute inset-0 opacity-10 blur-3xl pointer-events-none transition-all duration-500"
@@ -99,7 +99,7 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
               <img
                 src={entry.game.coverUrl.replace("t_thumb", "t_cover_big")}
                 alt={`${entry.game.name} cover`}
-                className="w-44 h-60 object-cover rounded-2xl transition duration-500 shadow-2xl group-hover:scale-105"
+                className="w-28 h-40 sm:w-36 sm:h-52 md:w-44 md:h-60 object-cover rounded-2xl transition duration-500 shadow-2xl group-hover:scale-105"
                 style={{
                   boxShadow: `0 10px 30px -10px ${sliderColor}`
                 }}
@@ -111,7 +111,7 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
           <div className="mt-6 flex flex-col items-center z-10">
             <span className="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-1">Your Rating</span>
             <div
-              className="inline-flex items-center justify-center font-extrabold px-6 py-2 rounded-full text-3xl select-none transition-all duration-300"
+              className="inline-flex items-center justify-center font-extrabold px-5 py-2 rounded-full text-2xl sm:text-3xl select-none transition-all duration-300"
               style={{ 
                 color: sliderColor, 
                 backgroundColor: `${sliderColor.replace("rgb", "rgba").replace(")", ", 0.1)")}`,
@@ -124,14 +124,14 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
         </div>
 
         {/* Right Side: Form */}
-        <div className="md:w-3/5 p-8 flex flex-col justify-between">
+        <div className="md:w-3/5 p-4 sm:p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
           <div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2 leading-tight">
               {entry.game.name}
             </h2>
-            <p className="text-zinc-500 text-sm mb-6">Modify your rating and play status below.</p>
+            <p className="text-zinc-500 text-sm mb-4 sm:mb-6">Modify your rating and play status below.</p>
 
-            <form onSubmit={handleUpdate} className="flex flex-col gap-6">
+            <form onSubmit={handleUpdate} className="flex flex-col gap-4 sm:gap-6">
               {/* Rating Slider Section */}
               <div className="flex flex-col gap-3">
                 <label htmlFor="rating" className="text-sm font-semibold text-zinc-300 flex justify-between items-center">
@@ -141,7 +141,7 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
                     {formData.rating.toFixed(1)} / 10
                   </span>
                 </label>
-                <div className="relative pt-2 pb-6">
+                <div className="relative pt-2 pb-5 sm:pb-6">
                   <input
                     type="range"
                     id="rating"
@@ -169,7 +169,7 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
               {/* Status Buttons Grid */}
               <div className="flex flex-col gap-2">
                 <span className="text-sm font-semibold text-zinc-300">Status</span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {statusOptions.map((option) => {
                     const isSelected = formData.status === option.value;
                     const config = STATUSES[option.value];
@@ -183,7 +183,7 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
                         onClick={() =>
                           setFormData((prev) => ({ ...prev, status: option.value }))
                         }
-                        className={`relative flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-medium transition-all duration-200 border-2 select-none group text-left ${
+                        className={`relative flex items-center gap-2 px-3 py-2.5 rounded-xl font-medium transition-all duration-200 border-2 select-none group text-left min-h-[3rem] ${
                           isSelected
                             ? "bg-zinc-800 text-white border-zinc-700"
                             : "bg-zinc-800/40 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80 border-transparent"
@@ -211,28 +211,28 @@ export default function EditGameModal({ isOpen, onClose, onUpdate, entry, onDele
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between border-t border-zinc-800/80 pt-6 mt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-zinc-800/80 pt-5 sm:pt-6 mt-1 sm:mt-2">
                 <button
                   type="button"
                   onClick={() => onDelete(entry.game.id)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-red-500/20 hover:border-red-500/50 hover:bg-red-500/10 text-red-400 hover:text-red-300 transition text-sm font-semibold"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-red-500/20 hover:border-red-500/50 hover:bg-red-500/10 text-red-400 hover:text-red-300 transition text-sm font-semibold"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete
                 </button>
                 
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2.5 rounded-xl bg-zinc-800/60 hover:bg-zinc-750 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-zinc-200 transition text-sm font-semibold"
+                    className="px-4 py-2.5 rounded-xl bg-zinc-800/60 hover:bg-zinc-750 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-zinc-200 transition text-sm font-semibold w-full sm:w-auto"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={!formData.status}
-                    className="px-5 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold transition text-sm disabled:opacity-40 disabled:hover:bg-white flex items-center gap-1.5 shadow-lg shadow-white/5"
+                    className="px-5 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold transition text-sm disabled:opacity-40 disabled:hover:bg-white flex items-center justify-center gap-1.5 shadow-lg shadow-white/5 w-full sm:w-auto"
                   >
                     <Check className="w-4 h-4" />
                     Save Changes

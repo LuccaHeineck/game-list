@@ -175,8 +175,8 @@ export default function GameList() {
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Status Filter Sidebar */}
-        <div className="w-full md:w-56 flex-shrink-0 sticky top-24 self-start z-10">
-          <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible pb-3 md:pb-0 scrollbar-hide">
+        <div className="w-full md:w-56 flex-shrink-0 sticky top-0 md:top-24 self-start z-20 bg-[#09090b]/95 backdrop-blur-md border-b border-zinc-800/60 py-3 md:py-0 md:bg-transparent md:backdrop-blur-none md:border-0">
+          <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scrollbar-hide">
             {statuses.map((status) => {
               const isSelected = selectedStatus === status.statusId;
               const statusConfig = STATUSES[status.statusId];
